@@ -1,0 +1,17 @@
+# Version Control & Dependencies
+.git
+.idea
+.vscode
+vendor/
+node_modules/
+
+# Binaries & Builds
+bin/
+dist/
+*.exe
+*.test
+*.out
+
+# Environment files
+.env*
+testdata/
