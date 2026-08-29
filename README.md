@@ -13,7 +13,7 @@ indevida de arquivos de variáveis de ambiente (`.env`, `.env.production`, `.env
 
 ---
 
-## 🎯 Por que o `envguard`?
+## Por que o `envguard`?
 
 Arquivos `.env` costumam armazenar dados sensíveis: credenciais de banco de dados, chaves de API, tokens e certificados.
 Um descuido na configuração do `.gitignore` ou um simples `git add .` desavisado pode comitar esses segredos no
@@ -21,17 +21,17 @@ histórico de versão.
 
 O `envguard` resolve isso com foco específico em arquivos de ambiente:
 
-- 🔍 **Git-Aware:** Entende o estado do repositório — diferencia se um `.env` está rastreado (*tracked*), preparado
+-  **Git-Aware:** Entende o estado do repositório — diferencia se um `.env` está rastreado (*tracked*), preparado
   (*staged*), ignorado ou desprotegido.
-- ⚡ **Rápido & Local:** Funciona 100% offline, sem envio de dados para servidores externos. Ideal para execução local,
+-  **Rápido & Local:** Funciona 100% offline, sem envio de dados para servidores externos. Ideal para execução local,
   *pre-commit hooks* e pipelines de CI/CD.
-- 🔒 **Seguro por Design:** Nunca imprime ou expõe valores de variáveis ou segredos em logs ou saídas do terminal.
-- 🤖 **Pronto para CI/CD:** Suporta formato JSON estruturado (`--format json`) e códigos de saída determinísticos para
+-  **Seguro por Design:** Nunca imprime ou expõe valores de variáveis ou segredos em logs ou saídas do terminal.
+-  **Pronto para CI/CD:** Suporta formato JSON estruturado (`--format json`) e códigos de saída determinísticos para
   automação.
 
 ---
 
-## 🚀 Instalação
+## Instalação
 
 ### Via `go install` (Requer Go 1.22+)
 
@@ -101,7 +101,7 @@ envguard version
 
 ---
 
-## 📊 Níveis de Severidade
+## Níveis de Severidade
 
 | Nível               | Situação                                                                | Ação Recomendada                                                       |
 |:--------------------|:------------------------------------------------------------------------|:-----------------------------------------------------------------------|
@@ -123,11 +123,11 @@ envguard version
 
 ## 🗺️ Roadmap
 
-- [] **v0.1.0 (MVP):**
-    - [] Detecção de `.env` e variantes
-    - [] Integração Git (*tracked*, *staged*, *gitignore*)
-    - [] Relatórios em Terminal e JSON
-    - [] Códigos de saída para CI/CD
+- [ ] **v0.1.0 (MVP):**
+    - [ ] Detecção de `.env` e variantes
+    - [ ] Integração Git (*tracked*, *staged*, *gitignore*)
+    - [ ] Relatórios em Terminal e JSON
+    - [ ] Códigos de saída para CI/CD
 - [ ] **v0.2.0:**
     - [ ] `envguard init` (criação automática de `.envguard.yaml` e templates)
     - [ ] `envguard fix` (auxílio na adição automática ao `.gitignore`)
@@ -140,7 +140,7 @@ envguard version
 
 ---
 
-## 🤝 Como Contribuir
+## Como Contribuir
 
 Contribuições são super bem-vindas! Como um projeto Open Source mantido pela comunidade:
 
