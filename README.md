@@ -1,4 +1,4 @@
-# 🛡️ envguard
+# envguard
 
 > **Prevent `.env` files and environment secrets from accidentally reaching Git.**
 
@@ -24,8 +24,8 @@ O `envguard` resolve isso com foco específico em arquivos de ambiente:
 -  **Git-Aware:** Entende o estado do repositório — diferencia se um `.env` está rastreado (*tracked*), preparado
   (*staged*), ignorado ou desprotegido.
 -  **Rápido & Local:** Funciona 100% offline, sem envio de dados para servidores externos. Ideal para execução local,
-  *pre-commit hooks* e pipelines de CI/CD.
--  **Seguro por Design:** Nunca imprime ou expõe valores de variáveis ou segredos em logs ou saídas do terminal.
+  *precommit hooks* e pipelines de CI/CD.
+-  **Seguro por Design:** Nunca imprime ou expõe valores de variáveis, ou segredos em logs, ou saídas do terminal.
 -  **Pronto para CI/CD:** Suporta formato JSON estruturado (`--format json`) e códigos de saída determinísticos para
   automação.
 
@@ -54,7 +54,7 @@ go build -o envguard ./cmd/envguard
 
 ---
 
-## 💻 Uso & Comandos
+## Uso & Comandos
 
 ### 1. Varredura Local (`scan`)
 
@@ -67,7 +67,8 @@ envguard scan
 Exemplo de saída no terminal:
 
 ```text
-🛡️  envguard v0.1.0
+envguard v0.1.0
+
 Repository: ./my-project
 Scanning...
 
@@ -112,7 +113,7 @@ envguard version
 
 ---
 
-## ⚙️ Padrões e Exceções Padrão
+## Padrões e Exceções Padrão
 
 - **Padrões monitorados:** `.env`, `.env.*`, `*.env`
 - **Exceções seguras permitidas por padrão:** `.env.example`, `.env.sample`, `.env.template`
@@ -121,17 +122,17 @@ envguard version
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] **v0.1.0 (MVP):**
-    - [ ] Detecção de `.env` e variantes
+    - [ ] Deteção de `.env` e variantes
     - [ ] Integração Git (*tracked*, *staged*, *gitignore*)
     - [ ] Relatórios em Terminal e JSON
     - [ ] Códigos de saída para CI/CD
 - [ ] **v0.2.0:**
     - [ ] `envguard init` (criação automática de `.envguard.yaml` e templates)
     - [ ] `envguard fix` (auxílio na adição automática ao `.gitignore`)
-    - [ ] Instalação de *Git Pre-commit Hooks*
+    - [ ] Instalação de *Git Precommit Hooks*
 - [ ] **v0.3.0:**
     - [ ] Secret scanning básico por conteúdo & cálculo de entropia
 - [ ] **v1.0.0:**
@@ -146,15 +147,15 @@ Contribuições são super bem-vindas! Como um projeto Open Source mantido pela 
 
 1. Faça um **Fork** do projeto.
 2. Crie uma branch para sua funcionalidade/correção: `git checkout -b feat/minha-feature`.
-3. Commit suas alterações seguindo [Conventional Commits](https://www.conventionalcommits.org/):
+3. Commit as suas alterações seguindo [Conventional Commits](https://www.conventionalcommits.org/):
    `git commit -m "feat: adiciona nova funcionalidade"`.
-4. Envie para sua branch: `git push origin feat/minha-feature`.
+4. Envie para a sua branch: `git push origin feat/minha-feature`.
 5. Abra um **Pull Request**.
 
-Por favor, leia nosso [Código de Conduta](CODE_OF_CONDUCT.md) antes de interagir na comunidade.
+Por favor, leia o nosso [Código de Conduta](CODE_OF_CONDUCT.md) antes de interagir na comunidade.
 
 ---
 
-## 📄 Licença
+## Licença
 
 Distribuído sob a licença **MIT**. Veja o arquivo [`LICENSE`](LICENSE) para mais detalhes.
