@@ -1,0 +1,6 @@
+# Format and validate Go files
+gofmt -s -w .
+go vet ./...
+
+# Format Markdown, JSON, YAML with Prettier
+npx prettier --write --ignore-unknown .

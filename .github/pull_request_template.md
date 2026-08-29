@@ -23,7 +23,8 @@
 ## Alterações Realizadas
 
 <!-- Liste em tópicos o que foi implementado, alterado ou removido. -->
-- 
+
+-
 
 -
 -
@@ -57,4 +58,4 @@
 <!-- Indique se há mudanças que quebram compatibilidade ou observações adicionais para os mantenedores. -->
 
 - [ ] Nenhuma breaking change.
-- Observações: 
+- Observações:

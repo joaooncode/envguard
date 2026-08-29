@@ -35,10 +35,11 @@ Se você encontrou um comportamento inesperado ou erro:
 
 1. Verifique na aba [Issues](https://github.com/joaooncode/envguard/issues) se o problema já foi reportado.
 2. Caso não exista, abra uma nova issue com:
-  - Uma descrição clara do problema.
-  - Passos para reproduzir o erro.
-  - Sistema operacional e versão do Go/envguard.
-  - Logs ou mensagens de erro relevantes (certifique-se de **não incluir credenciais reais** nos logs!).
+
+- Uma descrição clara do problema.
+- Passos para reproduzir o erro.
+- Sistema operacional e versão do Go/envguard.
+- Logs ou mensagens de erro relevantes (certifique-se de **não incluir credenciais reais** nos logs!).
 
 ### Sugerindo Melhorias
 
@@ -102,16 +103,21 @@ go build -o envguard ./cmd/envguard
 Para manter a consistência em todo o projeto:
 
 1. **Formatação Oficial do Go:**
-  - Execute sempre o `gofmt` antes de comitar:
-    ```bash
-    gofmt -s -w .
-    ```
+
+- Execute sempre o `gofmt` antes de comitar:
+  ```bash
+  gofmt -s -w .
+  ```
+
 2. **EditorConfig & Prettier:**
-  - O projeto possui [`.editorconfig`](.editorconfig) e [`.prettierrc`](.prettierrc) configurados.
-  - Mantenha **Tabs** para arquivos Go e **2 espaços** para Markdown, YAML e JSON.
+
+- O projeto possui [`.editorconfig`](.editorconfig) e [`.prettierrc`](.prettierrc) configurados.
+- Mantenha **Tabs** para arquivos Go e **2 espaços** para Markdown, YAML e JSON.
+
 3. **Segurança em Primeiro Lugar:**
-  - **Regra fundamental:** O `envguard` nunca deve imprimir nem expor valores de variáveis de ambiente ou segredos
-    detectados.
+
+- **Regra fundamental:** O `envguard` nunca deve imprimir nem expor valores de variáveis de ambiente ou segredos
+  detectados.
 
 ---
 
@@ -156,16 +162,19 @@ git commit -m "docs: adicionar guia de instalação no README"
    git checkout -b feat/minha-nova-feature
    ```
 3. **Implemente as alterações com testes:**
-  - Adicione testes unitários para o código novo/corrigido.
-  - Certifique-se de que `go test ./...` está passando.
+
+- Adicione testes unitários para o código novo/corrigido.
+- Certifique-se de que `go test ./...` está passando.
+
 4. **Envie para o seu fork:**
    ```bash
    git push origin feat/minha-nova-feature
    ```
 5. **Abra o Pull Request:**
-  - Abra o PR apontando para a branch `main` do repositório oficial.
-  - Preencha os campos do nosso **Pull Request Template** (`.github/pull_request_template.md`) com clareza.
-  - Marque a checklist pré-envio.
+
+- Abra o PR apontando para a branch `main` do repositório oficial.
+- Preencha os campos do nosso **Pull Request Template** (`.github/pull_request_template.md`) com clareza.
+- Marque a checklist pré-envio.
 
 ---
 

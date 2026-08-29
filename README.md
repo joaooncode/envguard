@@ -21,12 +21,12 @@ histórico de versão.
 
 O `envguard` resolve isso com foco específico em arquivos de ambiente:
 
--  **Git-Aware:** Entende o estado do repositório — diferencia se um `.env` está rastreado (*tracked*), preparado
-  (*staged*), ignorado ou desprotegido.
--  **Rápido & Local:** Funciona 100% offline, sem envio de dados para servidores externos. Ideal para execução local,
-  *precommit hooks* e pipelines de CI/CD.
--  **Seguro por Design:** Nunca imprime ou expõe valores de variáveis, ou segredos em logs, ou saídas do terminal.
--  **Pronto para CI/CD:** Suporta formato JSON estruturado (`--format json`) e códigos de saída determinísticos para
+- **Git-Aware:** Entende o estado do repositório — diferencia se um `.env` está rastreado (_tracked_), preparado
+  (_staged_), ignorado ou desprotegido.
+- **Rápido & Local:** Funciona 100% offline, sem envio de dados para servidores externos. Ideal para execução local,
+  _precommit hooks_ e pipelines de CI/CD.
+- **Seguro por Design:** Nunca imprime ou expõe valores de variáveis, ou segredos em logs, ou saídas do terminal.
+- **Pronto para CI/CD:** Suporta formato JSON estruturado (`--format json`) e códigos de saída determinísticos para
   automação.
 
 ---
@@ -50,7 +50,7 @@ cd envguard
 go build -o envguard ./cmd/envguard
 ```
 
-*(Distribuição futura via Homebrew, Scoop, WinGet e GitHub Releases)*
+_(Distribuição futura via Homebrew, Scoop, WinGet e GitHub Releases)_
 
 ---
 
@@ -105,9 +105,9 @@ envguard version
 ## Níveis de Severidade
 
 | Nível               | Situação                                                                | Ação Recomendada                                                       |
-|:--------------------|:------------------------------------------------------------------------|:-----------------------------------------------------------------------|
-| **`CRITICAL`**      | Arquivo de ambiente rastreado (*tracked*) no histórico Git              | Remover do rastreamento (`git rm --cached`) e rotacionar credenciais   |
-| **`HIGH`**          | Arquivo de ambiente adicionado para commit (*staged*)                   | Retirar da stage (`git reset HEAD <file>`) e adicionar ao `.gitignore` |
+| :------------------ | :---------------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| **`CRITICAL`**      | Arquivo de ambiente rastreado (_tracked_) no histórico Git              | Remover do rastreamento (`git rm --cached`) e rotacionar credenciais   |
+| **`HIGH`**          | Arquivo de ambiente adicionado para commit (_staged_)                   | Retirar da stage (`git reset HEAD <file>`) e adicionar ao `.gitignore` |
 | **`WARNING`**       | Arquivo existe localmente mas **não está** no `.gitignore`              | Adicionar padrão correspondente ao `.gitignore`                        |
 | **`INFO` / `SAFE`** | Arquivo protegido ou template permitido (`.env.example`, `.env.sample`) | Nenhuma ação necessária                                                |
 
@@ -118,26 +118,26 @@ envguard version
 - **Padrões monitorados:** `.env`, `.env.*`, `*.env`
 - **Exceções seguras permitidas por padrão:** `.env.example`, `.env.sample`, `.env.template`
 
-*(O suporte a configurações personalizadas via arquivo `.envguard.yaml` está no roadmap da v0.2)*
+_(O suporte a configurações personalizadas via arquivo `.envguard.yaml` está no roadmap da v0.2)_
 
 ---
 
 ## Roadmap
 
 - [ ] **v0.1.0 (MVP):**
-    - [ ] Deteção de `.env` e variantes
-    - [ ] Integração Git (*tracked*, *staged*, *gitignore*)
-    - [ ] Relatórios em Terminal e JSON
-    - [ ] Códigos de saída para CI/CD
+  - [ ] Deteção de `.env` e variantes
+  - [ ] Integração Git (_tracked_, _staged_, _gitignore_)
+  - [ ] Relatórios em Terminal e JSON
+  - [ ] Códigos de saída para CI/CD
 - [ ] **v0.2.0:**
-    - [ ] `envguard init` (criação automática de `.envguard.yaml` e templates)
-    - [ ] `envguard fix` (auxílio na adição automática ao `.gitignore`)
-    - [ ] Instalação de *Git Precommit Hooks*
+  - [ ] `envguard init` (criação automática de `.envguard.yaml` e templates)
+  - [ ] `envguard fix` (auxílio na adição automática ao `.gitignore`)
+  - [ ] Instalação de _Git Precommit Hooks_
 - [ ] **v0.3.0:**
-    - [ ] Secret scanning básico por conteúdo & cálculo de entropia
+  - [ ] Secret scanning básico por conteúdo & cálculo de entropia
 - [ ] **v1.0.0:**
-    - [ ] GitHub Action oficial
-    - [ ] Pacotes para Homebrew, Scoop, WinGet e AUR
+  - [ ] GitHub Action oficial
+  - [ ] Pacotes para Homebrew, Scoop, WinGet e AUR
 
 ---
 
