@@ -1,0 +1,19 @@
+release:
+  label: Release
+  permalink: /release
+  description: Notas e anúncios de versões do envguard
+
+security:
+  label: Segurança
+  permalink: /seguranca
+  description: Dicas e práticas recomendadas de segurança de variáveis de ambiente
+
+cli:
+  label: CLI
+  permalink: /cli
+  description: Novidades sobre a ferramenta de linha de comando
+
+golang:
+  label: Go
+  permalink: /golang
+  description: Tópicos sobre o ecossistema Go

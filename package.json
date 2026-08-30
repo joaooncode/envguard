@@ -7,7 +7,10 @@
     "prepare": "husky",
     "format": "prettier --write --ignore-unknown .",
     "format:check": "prettier --check --ignore-unknown .",
-    "lint:go": "gofmt -l . && go vet ./..."
+    "lint:go": "gofmt -l . && go vet ./...",
+    "docs:dev": "npm --prefix website run start",
+    "docs:build": "npm --prefix website run build",
+    "docs:serve": "npm --prefix website run serve"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",

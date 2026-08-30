@@ -12,6 +12,11 @@ dist/
 *.test
 *.out
 
+# Docusaurus
+website/build/
+website/.docusaurus/
+website/node_modules/
+
 # Environment files
 .env*
 testdata/
