@@ -65,6 +65,10 @@ func (r *OSCommandRunner) Run(dir string, args ...string) ([]byte, []byte, int, 
 
 // normalizePath converts a path (relative to dir or absolute) to a slash-delimited relative path to repoRoot.
 func normalizePath(repoRoot, dir, targetPath string) string {
+	if evalRoot, err := filepath.EvalSymlinks(repoRoot); err == nil {
+		repoRoot = evalRoot
+	}
+
 	var fullPath string
 	if filepath.IsAbs(targetPath) {
 		fullPath = targetPath
@@ -74,12 +78,36 @@ func normalizePath(repoRoot, dir, targetPath string) string {
 		fullPath = targetPath
 	}
 
+	if evalFull, err := filepath.EvalSymlinks(fullPath); err == nil {
+		fullPath = evalFull
+	} else {
+		parent := filepath.Dir(fullPath)
+		if evalParent, err := filepath.EvalSymlinks(parent); err == nil {
+			fullPath = filepath.Join(evalParent, filepath.Base(fullPath))
+		}
+	}
+
 	if repoRoot != "" {
-		if rel, err := filepath.Rel(repoRoot, fullPath); err == nil {
+		repoRootClean := filepath.Clean(repoRoot)
+		fullPathClean := filepath.Clean(fullPath)
+
+		volRepo := filepath.VolumeName(repoRootClean)
+		volFull := filepath.VolumeName(fullPathClean)
+		if volRepo != "" && strings.EqualFold(volRepo, volFull) && volRepo != volFull {
+			fullPathClean = volRepo + fullPathClean[len(volFull):]
+		}
+
+		if rel, err := filepath.Rel(repoRootClean, fullPathClean); err == nil && !strings.HasPrefix(rel, "..") {
 			cleanPath := filepath.ToSlash(rel)
 			cleanPath = strings.TrimPrefix(cleanPath, "./")
 			return cleanPath
 		}
+	}
+
+	if !filepath.IsAbs(targetPath) {
+		clean := filepath.ToSlash(filepath.Clean(targetPath))
+		clean = strings.TrimPrefix(clean, "./")
+		return clean
 	}
 
 	cleanPath := filepath.ToSlash(fullPath)
