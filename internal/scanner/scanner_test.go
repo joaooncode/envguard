@@ -368,12 +368,12 @@ type mockGitClient struct {
 	statusFn func(dir, filePath string) (git.FileStatus, error)
 }
 
-func (m *mockGitClient) IsAvailable() bool                                     { return true }
-func (m *mockGitClient) IsGitRepo(dir string) bool                             { return true }
-func (m *mockGitClient) GetRepoRoot(dir string) (string, error)                { return dir, nil }
-func (m *mockGitClient) IsTracked(dir, filePath string) (bool, error)          { return false, nil }
-func (m *mockGitClient) IsStaged(dir, filePath string) (bool, error)           { return false, nil }
-func (m *mockGitClient) IsIgnored(dir, filePath string) (bool, error)          { return false, nil }
+func (m *mockGitClient) IsAvailable() bool                            { return true }
+func (m *mockGitClient) IsGitRepo(dir string) bool                    { return true }
+func (m *mockGitClient) GetRepoRoot(dir string) (string, error)       { return dir, nil }
+func (m *mockGitClient) IsTracked(dir, filePath string) (bool, error) { return false, nil }
+func (m *mockGitClient) IsStaged(dir, filePath string) (bool, error)  { return false, nil }
+func (m *mockGitClient) IsIgnored(dir, filePath string) (bool, error) { return false, nil }
 func (m *mockGitClient) GetFileStatus(dir, filePath string) (git.FileStatus, error) {
 	if m.statusFn != nil {
 		return m.statusFn(dir, filePath)

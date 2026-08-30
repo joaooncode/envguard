@@ -93,4 +93,3 @@ func (j *JSONReporter) Render(result *scanner.Result, w io.Writer) error {
 
 	return nil
 }
-

@@ -82,7 +82,11 @@ func (c *GitClient) GetRepoRoot(dir string) (string, error) {
 	if err != nil || exitCode != 0 {
 		return "", fmt.Errorf("failed to get git repository root: %s (exit code %d)", strings.TrimSpace(string(stderr)), exitCode)
 	}
-	return filepath.Clean(strings.TrimSpace(string(stdout))), nil
+	root := filepath.Clean(strings.TrimSpace(string(stdout)))
+	if evalRoot, err := filepath.EvalSymlinks(root); err == nil {
+		return evalRoot, nil
+	}
+	return root, nil
 }
 
 // IsTracked reports whether the file at filePath is tracked in Git.

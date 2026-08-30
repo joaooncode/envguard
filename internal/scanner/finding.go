@@ -74,4 +74,3 @@ func (r *Result) CalculateSummary() Summary {
 	r.Summary = CalculateSummary(r.Findings)
 	return r.Summary
 }
-
