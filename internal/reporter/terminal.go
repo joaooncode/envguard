@@ -156,4 +156,3 @@ func (t *TerminalReporter) severityBadge(sev scanner.Severity) (icon string, bad
 		return t.c.dim("•"), t.c.dim(fmt.Sprintf("[%s]", sevUpper))
 	}
 }
-

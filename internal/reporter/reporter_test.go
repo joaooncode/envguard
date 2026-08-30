@@ -293,4 +293,3 @@ func TestJSONReporter_Render(t *testing.T) {
 		}
 	})
 }
-

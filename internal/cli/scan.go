@@ -12,10 +12,10 @@ import (
 
 // scanConfig holds the parsed options for scan/check commands.
 type scanConfig struct {
-	path      string
-	format    string
-	severity  string
-	noColor   bool
+	path     string
+	format   string
+	severity string
+	noColor  bool
 }
 
 func parseSeverity(s string) (scanner.Severity, bool) {
