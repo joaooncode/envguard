@@ -124,11 +124,11 @@ _(O suporte a configurações personalizadas via arquivo `.envguard.yaml` está 
 
 ## Roadmap
 
-- [ ] **v0.1.0 (MVP):**
-  - [ ] Deteção de `.env` e variantes
-  - [ ] Integração Git (_tracked_, _staged_, _gitignore_)
-  - [ ] Relatórios em Terminal e JSON
-  - [ ] Códigos de saída para CI/CD
+- [x] **v0.1.0 (MVP):**
+  - [x] Deteção de `.env` e variantes
+  - [x] Integração Git (_tracked_, _staged_, _gitignore_)
+  - [x] Relatórios em Terminal e JSON
+  - [x] Códigos de saída para CI/CD
 - [ ] **v0.2.0:**
   - [ ] `envguard init` (criação automática de `.envguard.yaml` e templates)
   - [ ] `envguard fix` (auxílio na adição automática ao `.gitignore`)
