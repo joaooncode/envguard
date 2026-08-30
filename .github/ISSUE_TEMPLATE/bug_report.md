@@ -1,18 +1,18 @@
 ---
-name: '🐛 Relato de Bug / Bug Report'
+name: 'Relato de Bug / Bug Report'
 about: Crie um relatório para nos ajudar a identificar e corrigir um problema
 title: 'fix: '
 labels: ['bug']
 assignees: ''
 ---
 
-## 📌 Descrição do Bug
+## Descrição do Bug
 
 <!-- Uma descrição clara e concisa do que é o bug e o que aconteceu de inesperado. -->
 
 ---
 
-## 🔁 Passos para Reproduzir
+## Passos para Reproduzir
 
 <!-- Passos detalhados para reproduzir o comportamento: -->
 
@@ -22,13 +22,13 @@ assignees: ''
 
 ---
 
-## 🎯 Comportamento Esperado
+## Comportamento Esperado
 
 <!-- Uma descrição clara e concisa do que você esperava que acontecesse. -->
 
 ---
 
-## 🖥️ Ambiente
+## Ambiente
 
 <!-- Por favor, preencha as informações sobre o seu ambiente: -->
 
@@ -38,10 +38,10 @@ assignees: ''
 
 ---
 
-## 📋 Logs e Mensagens de Erro
+## Logs e Mensagens de Erro
 
 <!-- Se aplicável, adicione saídas de terminal ou logs de erro para ajudar a explicar seu problema. -->
-<!-- ⚠️ IMPORTANTE: NUNCA inclua segredos reais, tokens ou valores de arquivos .env nos logs! -->
+<!-- IMPORTANTE: NUNCA inclua segredos reais, tokens ou valores de arquivos .env nos logs! -->
 
 ```text
 
@@ -49,6 +49,6 @@ assignees: ''
 
 ---
 
-## 📎 Contexto Adicional
+## Contexto Adicional
 
 <!-- Adicione qualquer outro contexto relevante sobre o problema aqui. -->
