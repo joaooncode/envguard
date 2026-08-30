@@ -1,6 +1,8 @@
 package scanner
 
 import (
+	"time"
+
 	"github.com/joaooncode/envguard/internal/git"
 )
 
@@ -23,22 +25,25 @@ type Finding struct {
 	Path        string         `json:"path"`
 	Severity    Severity       `json:"severity"`
 	Message     string         `json:"message"`
-	Suggestions []string       `json:"suggestions"`
+	Suggestions []string       `json:"suggestions,omitempty"`
 	GitStatus   git.FileStatus `json:"git_status"`
 	IsAllowed   bool           `json:"is_allowed"`
 }
 
 // Summary aggregates finding counts categorized by severity.
 type Summary struct {
-	Critical int `json:"critical"`
-	High     int `json:"high"`
-	Warning  int `json:"warning"`
-	Info     int `json:"info"`
-	Total    int `json:"total"`
+	Total    int  `json:"total"`
+	Critical int  `json:"critical"`
+	High     int  `json:"high"`
+	Warning  int  `json:"warning"`
+	Info     int  `json:"info"`
+	Passed   bool `json:"passed"`
 }
 
 // Result contains the complete scan output including findings and summary metrics.
 type Result struct {
+	Version    string    `json:"version,omitempty"`
+	Timestamp  time.Time `json:"timestamp,omitempty"`
 	ScannedDir string    `json:"scanned_dir"`
 	Findings   []Finding `json:"findings"`
 	Summary    Summary   `json:"summary"`
@@ -60,6 +65,7 @@ func CalculateSummary(findings []Finding) Summary {
 		}
 	}
 	s.Total = len(findings)
+	s.Passed = (s.Critical == 0 && s.High == 0 && s.Warning == 0)
 	return s
 }
 
@@ -68,3 +74,4 @@ func (r *Result) CalculateSummary() Summary {
 	r.Summary = CalculateSummary(r.Findings)
 	return r.Summary
 }
+
