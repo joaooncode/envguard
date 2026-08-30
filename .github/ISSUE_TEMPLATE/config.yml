@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Perguntas e Discussões
+    url: https://github.com/joaooncode/envguard/discussions
+    about: Por favor, use o GitHub Discussions para dúvidas de uso e discussões gerais.
+  - name: 📖 Documentação do Projeto
+    url: https://github.com/joaooncode/envguard#readme
+    about: Consulte o README e o Guia de Contribuição do envguard.
