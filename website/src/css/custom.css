@@ -1,40 +1,245 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * envguard Custom Design System & Theme
+ * Palette:
+ * - #FFF7D1 (Cream / Glow Accent)
+ * - #8B5DFF (Electric Purple)
+ * - #6A42C2 (Royal Purple)
+ * - #563A9C (Deep Purple)
  */
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 :root {
-  --ifm-color-primary: #059669;
-  --ifm-color-primary-dark: #047857;
-  --ifm-color-primary-darker: #065f46;
-  --ifm-color-primary-darkest: #064e3b;
-  --ifm-color-primary-light: #10b981;
-  --ifm-color-primary-lighter: #34d399;
-  --ifm-color-primary-lightest: #6ee7b7;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  --ifm-font-family-base:
+    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
+  --ifm-code-font-size: 90%;
+  --ifm-heading-font-weight: 700;
+  --ifm-line-height-base: 1.65;
+
+  /* Brand Palette - Light Mode */
+  --ifm-color-primary: #6a42c2;
+  --ifm-color-primary-dark: #563a9c;
+  --ifm-color-primary-darker: #462e82;
+  --ifm-color-primary-darkest: #322060;
+  --ifm-color-primary-light: #8b5dff;
+  --ifm-color-primary-lighter: #9e75ff;
+  --ifm-color-primary-lightest: #be9eff;
+
+  --brand-cream: #fff7d1;
+  --brand-purple-neon: #8b5dff;
+  --brand-purple-royal: #6a42c2;
+  --brand-purple-deep: #563a9c;
+
+  --ifm-background-color: #fcfbfe;
+  --ifm-background-surface-color: #ffffff;
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.85);
+  --ifm-footer-background-color: #1a162b;
+
+  --brand-hero-bg: radial-gradient(circle at 50% 0%, #20173d 0%, #0f0a1c 100%);
+  --brand-card-bg: rgba(255, 255, 255, 0.9);
+  --brand-card-border: rgba(106, 66, 194, 0.15);
+  --brand-card-hover-border: #8b5dff;
+  --brand-glow: 0 8px 32px 0 rgba(106, 66, 194, 0.15);
+
+  --docusaurus-highlighted-code-line-bg: rgba(106, 66, 194, 0.1);
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: #10b981;
-  --ifm-color-primary-dark: #059669;
-  --ifm-color-primary-darker: #047857;
-  --ifm-color-primary-darkest: #065f46;
-  --ifm-color-primary-light: #34d399;
-  --ifm-color-primary-lighter: #6ee7b7;
-  --ifm-color-primary-lightest: #a7f3d0;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+  /* Brand Palette - Dark Mode */
+  --ifm-color-primary: #8b5dff;
+  --ifm-color-primary-dark: #6a42c2;
+  --ifm-color-primary-darker: #563a9c;
+  --ifm-color-primary-darkest: #3e2675;
+  --ifm-color-primary-light: #a37dff;
+  --ifm-color-primary-lighter: #b89bff;
+  --ifm-color-primary-lightest: #dcd0ff;
+
+  --ifm-background-color: #0b0914;
+  --ifm-background-surface-color: #120e21;
+  --ifm-navbar-background-color: rgba(11, 9, 20, 0.82);
+  --ifm-footer-background-color: #08060f;
+
+  --brand-hero-bg:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 93, 255, 0.25), transparent), #0b0914;
+  --brand-card-bg: rgba(18, 14, 33, 0.7);
+  --brand-card-border: rgba(139, 93, 255, 0.18);
+  --brand-card-hover-border: #8b5dff;
+  --brand-glow: 0 8px 32px 0 rgba(139, 93, 255, 0.18);
+
+  --docusaurus-highlighted-code-line-bg: rgba(139, 93, 255, 0.2);
 }
 
-.hero--primary {
-  background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+/* =========================================
+   Glassmorphism Navbar
+   ========================================= */
+.navbar {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--brand-card-border);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.navbar__title {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #8b5dff 0%, #6a42c2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 1.35rem;
+}
+
+.navbar__link {
+  font-weight: 600;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.navbar__link:hover,
+.navbar__link--active {
+  color: var(--ifm-color-primary) !important;
+}
+
+/* =========================================
+   Search Bar Customization
+   ========================================= */
+.navbar__search-input {
+  border-radius: 9999px !important;
+  border: 1px solid var(--brand-card-border) !important;
+  background-color: var(--ifm-background-surface-color) !important;
+  padding-left: 2.2rem !important;
+  transition: all 0.25s ease !important;
+}
+
+.navbar__search-input:focus {
+  border-color: var(--brand-purple-neon) !important;
+  box-shadow: 0 0 0 3px rgba(139, 93, 255, 0.25) !important;
+  width: 240px !important;
+}
+
+/* =========================================
+   Modern Buttons
+   ========================================= */
+.button {
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 0.75rem 1.6rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.button--primary {
+  background: linear-gradient(135deg, #8b5dff 0%, #6a42c2 100%);
+  border: none;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(106, 66, 194, 0.35);
+}
+
+.button--primary:hover {
+  background: linear-gradient(135deg, #9b74ff 0%, #7c52d8 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 93, 255, 0.45);
+}
+
+.button--secondary {
+  background: rgba(139, 93, 255, 0.12);
+  color: var(--ifm-color-primary) !important;
+  border: 1px solid var(--brand-card-border);
+  backdrop-filter: blur(8px);
+}
+
+.button--secondary:hover {
+  background: rgba(139, 93, 255, 0.2);
+  border-color: var(--brand-purple-neon);
+  transform: translateY(-2px);
+}
+
+/* =========================================
+   Documentation Sidebar & Content
+   ========================================= */
+.theme-doc-sidebar-container {
+  border-right: 1px solid var(--brand-card-border) !important;
+}
+
+.menu__link {
+  border-radius: 8px;
+  font-weight: 500;
+  margin: 2px 0;
+  transition: all 0.2s ease;
+}
+
+.menu__link--active:not(.menu__link--sublist) {
+  background: linear-gradient(
+    90deg,
+    rgba(139, 93, 255, 0.18) 0%,
+    rgba(106, 66, 194, 0.08) 100%
+  ) !important;
+  color: var(--ifm-color-primary) !important;
+  font-weight: 700;
+  border-left: 3px solid var(--brand-purple-neon);
+}
+
+.menu__link:hover:not(.menu__link--active) {
+  background-color: rgba(139, 93, 255, 0.08);
+  color: var(--ifm-color-primary);
+}
+
+/* =========================================
+   Modern Code Blocks & Admonitions
+   ========================================= */
+div[class^='codeBlockContainer_'] {
+  border-radius: 12px;
+  border: 1px solid var(--brand-card-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.alert {
+  border-radius: 12px;
+  border-width: 1px;
+  border-left-width: 5px;
+  backdrop-filter: blur(8px);
+}
+
+.alert--info {
+  --ifm-alert-background-color: rgba(139, 93, 255, 0.08);
+  --ifm-alert-border-color: #8b5dff;
+}
+
+.alert--success {
+  --ifm-alert-background-color: rgba(16, 185, 129, 0.08);
+  --ifm-alert-border-color: #10b981;
+}
+
+.alert--warning {
+  --ifm-alert-background-color: rgba(255, 193, 7, 0.08);
+  --ifm-alert-border-color: #f59e0b;
+}
+
+/* =========================================
+   Custom Scrollbar & Highlights
+   ========================================= */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(106, 66, 194, 0.3);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-purple-neon);
+}
+
+::selection {
+  background: #8b5dff;
   color: #ffffff;
-}
-
-.hero__subtitle {
-  font-size: 1.25rem;
-  max-width: 700px;
-  margin: 0 auto;
-  opacity: 0.95;
 }

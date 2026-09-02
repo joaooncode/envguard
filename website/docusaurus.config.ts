@@ -44,9 +44,27 @@ const config: Config = {
     ],
   ],
 
+  themes: [
+    [
+      require.resolve('@easyops-cn/docusaurus-search-local'),
+      {
+        hashed: true,
+        language: ['en'],
+        indexDocs: true,
+        indexBlog: true,
+        indexPages: true,
+        docsRouteBasePath: '/docs',
+        highlightSearchTermsOnTargetPage: true,
+        searchResultLimits: 8,
+        searchResultContextMaxLength: 60,
+      },
+    ],
+  ],
+
   themeConfig: {
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
+      defaultMode: 'dark',
       respectPrefersColorScheme: true,
     },
     navbar: {
@@ -58,11 +76,12 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          sidebarId: 'docsSidebar',
           position: 'left',
           label: 'Documentação',
         },
-        { to: '/blog', label: 'Blog / Notas de Versão', position: 'left' },
+        { to: '/docs/quickstart', label: 'Início Rápido', position: 'left' },
+        { to: '/blog', label: 'Blog & Versões', position: 'left' },
         {
           href: 'https://github.com/joaooncode/envguard',
           label: 'GitHub',
@@ -74,29 +93,29 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Documentação',
+          title: 'Começando',
           items: [
             { label: 'Visão Geral', to: '/docs/intro' },
             { label: 'Instalação', to: '/docs/installation' },
-            { label: 'Comandos CLI', to: '/docs/commands/scan' },
-            { label: 'Níveis de Severidade', to: '/docs/severity-levels' },
+            { label: 'Início Rápido', to: '/docs/quickstart' },
           ],
         },
         {
-          title: 'Integrações',
+          title: 'Comandos & Regras',
+          items: [
+            { label: 'Varredura (scan)', to: '/docs/commands/scan' },
+            { label: 'Verificação (check)', to: '/docs/commands/check' },
+            { label: 'Níveis de Severidade', to: '/docs/severity-levels' },
+            { label: 'Configuração (.envguard.yaml)', to: '/docs/configuration' },
+          ],
+        },
+        {
+          title: 'Automação & Comunidade',
           items: [
             { label: 'CI/CD & Git Hooks', to: '/docs/cicd-integration' },
             { label: 'Guia de Contribuição', to: '/docs/contributing' },
-          ],
-        },
-        {
-          title: 'Comunidade',
-          items: [
-            { label: 'Repositório GitHub', href: 'https://github.com/joaooncode/envguard' },
-            {
-              label: 'Reportar Problema (Issue)',
-              href: 'https://github.com/joaooncode/envguard/issues',
-            },
+            { label: 'GitHub Repository', href: 'https://github.com/joaooncode/envguard' },
+            { label: 'Reportar Problema', href: 'https://github.com/joaooncode/envguard/issues' },
           ],
         },
       ],
