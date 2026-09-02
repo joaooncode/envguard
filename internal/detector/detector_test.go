@@ -179,4 +179,3 @@ func TestCustomPatternsAndAllowlist(t *testing.T) {
 		t.Errorf("expected custom allowlist app.env.custom-example to be allowed")
 	}
 }
-

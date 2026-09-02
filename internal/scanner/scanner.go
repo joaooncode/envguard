@@ -68,7 +68,6 @@ func NewDefault() *Scanner {
 	return NewWithConfig(nil, nil, nil)
 }
 
-
 // Scan recursively walks the directory and classifies any detected environment files.
 // It never opens or reads file contents.
 func (s *Scanner) Scan(dir string) (*Result, error) {
@@ -105,7 +104,6 @@ func (s *Scanner) Scan(dir string) (*Result, error) {
 			}
 			return nil
 		}
-
 
 		// Evaluate path against detector rules without opening or reading the file
 		isEnv, isAllowed := s.detector.Detect(d.Name())
@@ -219,7 +217,6 @@ func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllow
 		IsAllowed:   isAllowed,
 	}
 }
-
 
 // DefaultScanner is the package-level default scanner instance.
 var DefaultScanner = NewDefault()

@@ -101,7 +101,6 @@ func runScanCommand(args []string, stdout, stderr io.Writer, scannerInstance *sc
 		scannerInstance = scanner.NewWithConfig(nil, nil, appConfig)
 	}
 
-
 	result, err := scannerInstance.Scan(cfg.path)
 	if err != nil {
 		fmt.Fprintf(stderr, "Error: failed to scan directory %s: %v\n", cfg.path, err)

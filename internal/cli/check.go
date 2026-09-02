@@ -11,7 +11,6 @@ import (
 	"github.com/joaooncode/envguard/internal/scanner"
 )
 
-
 func runCheckCommand(args []string, stdout, stderr io.Writer, scannerInstance *scanner.Scanner) int {
 	fs := flag.NewFlagSet("check", flag.ContinueOnError)
 	fs.SetOutput(stderr)
@@ -60,7 +59,6 @@ func runCheckCommand(args []string, stdout, stderr io.Writer, scannerInstance *s
 	if scannerInstance == nil {
 		scannerInstance = scanner.NewWithConfig(nil, nil, appConfig)
 	}
-
 
 	result, err := scannerInstance.Scan(cfg.path)
 	if err != nil {

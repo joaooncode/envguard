@@ -12,7 +12,6 @@ import (
 	"github.com/joaooncode/envguard/internal/git"
 )
 
-
 // setupGitRepo creates a temporary initialized git repository.
 func setupGitRepo(t *testing.T) string {
 	t.Helper()
@@ -477,4 +476,3 @@ func TestScannerWithConfig(t *testing.T) {
 		t.Errorf("expected .env.test to be overridden to Critical, got %+v", f)
 	}
 }
-

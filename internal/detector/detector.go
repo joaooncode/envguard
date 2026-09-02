@@ -49,7 +49,6 @@ func NewWithPatterns(customPatterns []string, customAllowlist []string) *Detecto
 	}
 }
 
-
 // extractBaseName extracts the filename from a given path across Unix and Windows formats.
 func extractBaseName(path string) string {
 	cleanPath := strings.ReplaceAll(path, "\\", "/")
@@ -104,7 +103,6 @@ func (d *Detector) IsEnvFile(path string) bool {
 
 	return false
 }
-
 
 // IsAllowed reports whether path is a recognized safe template/example file according to the allowlist.
 func (d *Detector) IsAllowed(path string) bool {
