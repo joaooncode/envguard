@@ -5,7 +5,7 @@
 
 ---
 
-## ️Tipo de Alteração
+## Tipo de Alteração
 
 <!-- Marque a opção que melhor descreve as suas alterações: -->
 
@@ -53,9 +53,10 @@
 
 ---
 
-## ⚠️ Breaking Changes / Observações
+## Breaking Changes / Observações
 
 <!-- Indique se há mudanças que quebram compatibilidade ou observações adicionais para os mantenedores. -->
 
 - [ ] Nenhuma breaking change.
 - Observações:
+
