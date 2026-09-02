@@ -67,6 +67,9 @@ func (a *App) Run(args []string) int {
 	case "check":
 		return runCheckCommand(args[1:], a.stdout, a.stderr, a.scanner)
 
+	case "init":
+		return runInitCommand(args[1:], a.stdout, a.stderr)
+
 	default:
 		fmt.Fprintf(a.stderr, "Error: unknown command or flag %q\n\n", args[0])
 		a.printHelpTo(a.stderr)
@@ -87,6 +90,7 @@ Usage:
 Available Commands:
   scan       Scan a directory for unprotected environment files
   check      Run verification optimized for CI/CD pipelines
+  init       Initialize configuration file and safe template files
   version    Show current envguard version
   help       Show help for envguard commands
 
@@ -100,11 +104,20 @@ Scan & Check Flags:
   -s, --severity   Minimum severity level: info|warning|high|critical|all (default: "all")
       --no-color   Disable ANSI color escape codes in terminal output
 
+Init Flags:
+  -p, --path           Target directory path to initialize (default: ".")
+  -f, --force          Overwrite existing configuration or template files
+  -t, --template       Generate a safe .env.example template file
+      --template-from  Source .env file to sanitize and create template from
+
 Examples:
   envguard scan
   envguard scan --path ./my-project --format json
   envguard scan --severity warning
   envguard check --path . --severity high
+  envguard init
+  envguard init --template
+  envguard init --path ./my-project --force
   envguard version
 `
 	fmt.Fprint(w, help)
