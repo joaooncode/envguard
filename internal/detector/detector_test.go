@@ -149,20 +149,34 @@ func TestDetect(t *testing.T) {
 	}
 }
 
-func TestCustomAllowlist(t *testing.T) {
-	customDetector := NewWithAllowlist([]string{
-		".env.dist",
-		"*.env.defaults",
-	})
+func TestCustomPatternsAndAllowlist(t *testing.T) {
+	d := NewWithPatterns(
+		[]string{"*.env.vault", ".env.secret"},
+		[]string{".env.dist", "*.env.custom-example"},
+	)
 
-	// Default allowlist items shouldn't match in this custom instance unless defined
-	if customDetector.IsAllowed(".env.dist") != true {
-		t.Errorf("expected .env.dist to be allowed in custom detector")
+	// Built-in defaults should still work
+	if !d.IsEnvFile(".env") {
+		t.Errorf("expected default .env to be recognized")
 	}
-	if customDetector.IsAllowed("app.env.defaults") != true {
-		t.Errorf("expected app.env.defaults to be allowed in custom detector")
+	if !d.IsAllowed(".env.example") {
+		t.Errorf("expected default .env.example to be allowed")
 	}
-	if customDetector.IsAllowed(".env.production") != false {
-		t.Errorf("expected .env.production to not be allowed")
+
+	// Custom patterns
+	if !d.IsEnvFile("backend.env.vault") {
+		t.Errorf("expected custom pattern backend.env.vault to be recognized")
+	}
+	if !d.IsEnvFile(".env.secret") {
+		t.Errorf("expected custom pattern .env.secret to be recognized")
+	}
+
+	// Custom allowlist
+	if !d.IsAllowed(".env.dist") {
+		t.Errorf("expected custom allowlist .env.dist to be allowed")
+	}
+	if !d.IsAllowed("app.env.custom-example") {
+		t.Errorf("expected custom allowlist app.env.custom-example to be allowed")
 	}
 }
+

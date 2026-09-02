@@ -6,9 +6,11 @@ import (
 	"io"
 	"strings"
 
+	"github.com/joaooncode/envguard/internal/config"
 	"github.com/joaooncode/envguard/internal/reporter"
 	"github.com/joaooncode/envguard/internal/scanner"
 )
+
 
 func runCheckCommand(args []string, stdout, stderr io.Writer, scannerInstance *scanner.Scanner) int {
 	fs := flag.NewFlagSet("check", flag.ContinueOnError)
@@ -17,6 +19,8 @@ func runCheckCommand(args []string, stdout, stderr io.Writer, scannerInstance *s
 	var cfg scanConfig
 	fs.StringVar(&cfg.path, "path", ".", "Target directory path to check")
 	fs.StringVar(&cfg.path, "p", ".", "Target directory path to check (shorthand)")
+	fs.StringVar(&cfg.configPath, "config", "", "Path to custom configuration file")
+	fs.StringVar(&cfg.configPath, "c", "", "Path to custom configuration file (shorthand)")
 	fs.StringVar(&cfg.format, "format", "text", "Output format: text|terminal|json")
 	fs.StringVar(&cfg.format, "f", "text", "Output format (shorthand)")
 	fs.StringVar(&cfg.severity, "severity", "all", "Minimum severity level to trigger check failure (info, warning, high, critical)")
@@ -46,9 +50,17 @@ func runCheckCommand(args []string, stdout, stderr io.Writer, scannerInstance *s
 		return ExitCodeUsageError
 	}
 
-	if scannerInstance == nil {
-		scannerInstance = scanner.DefaultScanner
+	// Load configuration
+	appConfig, _, err := config.DiscoverAndLoad(cfg.path, cfg.configPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "Error: %v\n", err)
+		return ExitCodeUsageError
 	}
+
+	if scannerInstance == nil {
+		scannerInstance = scanner.NewWithConfig(nil, nil, appConfig)
+	}
+
 
 	result, err := scannerInstance.Scan(cfg.path)
 	if err != nil {
