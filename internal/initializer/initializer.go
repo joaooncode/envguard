@@ -53,7 +53,6 @@ API_KEY=
 JWT_SECRET=
 `
 
-
 // SanitizeEnv reads an environment file and strips all sensitive values,
 // keeping variable names, empty lines, and comments intact.
 func SanitizeEnv(r io.Reader) string {
