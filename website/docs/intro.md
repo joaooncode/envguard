@@ -49,6 +49,7 @@ O `envguard` resolve isso com foco específico em arquivos de ambiente:
 ## Próximos Passos
 
 - [Instalação](./installation.md): Saiba como instalar o binário localmente.
-- [Comandos](./commands/scan.md): Conheça os comandos `scan`, `check` e `version`.
+- [Comandos](./commands/scan.md): Conheça os comandos `scan`, `check`, `init`, `fix`, `hook` e `version`.
+- [Arquivo de Configuração](./configuration.md): Personalize regras, exceções e severidades via `.envguard.yaml`.
 - [Níveis de Severidade](./severity-levels.md): Entenda os alertas e as ações recomendadas.
-- [Integração CI/CD](./cicd-integration.md): Automatize a proteção no GitHub Actions.
+- [Integração CI/CD](./cicd-integration.md): Automatize a proteção no GitHub Actions e pre-commit hooks.

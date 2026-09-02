@@ -17,3 +17,13 @@ golang:
   label: Go
   permalink: /golang
   description: Tópicos sobre o ecossistema Go
+
+git-hooks:
+  label: Git Hooks
+  permalink: /git-hooks
+  description: Gerenciamento e boas práticas com Git Hooks
+
+automation:
+  label: Automação
+  permalink: /automacao
+  description: Automação e pipelines de segurança
