@@ -6,19 +6,13 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: '🚀 Primeiros Passos',
       collapsed: false,
-      items: [
-        'intro',
-        'installation',
-        'quickstart',
-      ],
+      items: ['intro', 'installation', 'quickstart'],
     },
     {
       type: 'category',
       label: '🛡️ Conceitos & Segurança',
       collapsed: false,
-      items: [
-        'severity-levels',
-      ],
+      items: ['severity-levels'],
     },
     {
       type: 'category',
@@ -37,25 +31,19 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: '⚙️ Configuração',
       collapsed: false,
-      items: [
-        'configuration',
-      ],
+      items: ['configuration'],
     },
     {
       type: 'category',
       label: '🔄 Automação & CI/CD',
       collapsed: false,
-      items: [
-        'cicd-integration',
-      ],
+      items: ['cicd-integration'],
     },
     {
       type: 'category',
       label: '🤝 Comunidade',
       collapsed: true,
-      items: [
-        'contributing',
-      ],
+      items: ['contributing'],
     },
   ],
 };

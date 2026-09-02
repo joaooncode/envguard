@@ -17,8 +17,9 @@ const FeatureList: FeatureItem[] = [
     title: 'Git-Aware & Inteligente',
     description: (
       <>
-        O <code>envguard</code> analisa a árvore de trabalho do Git e diferencia se arquivos <code>.env</code>{' '}
-        estão comitados (<em>tracked</em>), preparados (<em>staged</em>) ou desprotegidos pelo <code>.gitignore</code>.
+        O <code>envguard</code> analisa a árvore de trabalho do Git e diferencia se arquivos{' '}
+        <code>.env</code> estão comitados (<em>tracked</em>), preparados (<em>staged</em>) ou
+        desprotegidos pelo <code>.gitignore</code>.
       </>
     ),
   },
@@ -28,8 +29,8 @@ const FeatureList: FeatureItem[] = [
     title: 'Ultrarrápido & 100% Local',
     description: (
       <>
-        Construído em Go nativo, executa instantaneamente e 100% offline. Nunca envia dados para servidores
-        remotos e jamais expõe o conteúdo dos seus segredos.
+        Construído em Go nativo, executa instantaneamente e 100% offline. Nunca envia dados para
+        servidores remotos e jamais expõe o conteúdo dos seus segredos.
       </>
     ),
   },
@@ -39,8 +40,8 @@ const FeatureList: FeatureItem[] = [
     title: 'Pronto para CI/CD & Hooks',
     description: (
       <>
-        Instale pre-commit hooks nativos com <code>envguard hook install</code> e utilize saídas JSON determinísticas
-        para automação no GitHub Actions e pipelines.
+        Instale pre-commit hooks nativos com <code>envguard hook install</code> e utilize saídas
+        JSON determinísticas para automação no GitHub Actions e pipelines.
       </>
     ),
   },
@@ -50,8 +51,8 @@ const FeatureList: FeatureItem[] = [
     title: 'Remediação com 1 Comando',
     description: (
       <>
-        Com o comando <code>envguard fix</code>, você remove arquivos sensíveis do cache do Git e adiciona as regras
-        necessárias no <code>.gitignore</code> automaticamente.
+        Com o comando <code>envguard fix</code>, você remove arquivos sensíveis do cache do Git e
+        adiciona as regras necessárias no <code>.gitignore</code> automaticamente.
       </>
     ),
   },
@@ -61,8 +62,9 @@ const FeatureList: FeatureItem[] = [
     title: 'Níveis de Severidade',
     description: (
       <>
-        Classificação precisa dos alertas em <strong>CRITICAL</strong>, <strong>WARNING</strong> e <strong>INFO</strong>,
-        com suporte a flags como <code>--fail-on</code> para bloquear builds arriscados.
+        Classificação precisa dos alertas em <strong>CRITICAL</strong>, <strong>WARNING</strong> e{' '}
+        <strong>INFO</strong>, com suporte a flags como <code>--fail-on</code> para bloquear builds
+        arriscados.
       </>
     ),
   },
@@ -72,8 +74,8 @@ const FeatureList: FeatureItem[] = [
     title: 'Configuração Simplificada',
     description: (
       <>
-        Personalize padrões de busca, exceções de templates e regras customizadas através do arquivo central{' '}
-        <code>.envguard.yaml</code> gerado via <code>envguard init</code>.
+        Personalize padrões de busca, exceções de templates e regras customizadas através do arquivo
+        central <code>.envguard.yaml</code> gerado via <code>envguard init</code>.
       </>
     ),
   },
@@ -105,7 +107,8 @@ export default function HomepageFeatures(): ReactNode {
             Recursos projetados para proteger seu fluxo de trabalho
           </Heading>
           <p className={styles.sectionSubtitle}>
-            Simplicidade, velocidade e segurança máxima sem atrapalhar a produtividade do time de engenharia.
+            Simplicidade, velocidade e segurança máxima sem atrapalhar a produtividade do time de
+            engenharia.
           </p>
         </div>
         <div className="row">
@@ -117,4 +120,3 @@ export default function HomepageFeatures(): ReactNode {
     </section>
   );
 }
-

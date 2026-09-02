@@ -65,11 +65,11 @@ Isso gerará o arquivo de configuração `.envguard.yaml` na raiz do repositóri
 ```yaml
 version: 1
 patterns:
-  - ".env*"
+  - '.env*'
 ignore:
-  - ".env.example"
-  - ".env.template"
-fail_on: "warning" # Interrompe a execução com warning ou critical
+  - '.env.example'
+  - '.env.template'
+fail_on: 'warning' # Interrompe a execução com warning ou critical
 ```
 
 ---

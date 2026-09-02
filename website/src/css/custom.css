@@ -10,7 +10,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --ifm-font-family-base: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --ifm-font-family-base:
+    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
   --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
   --ifm-code-font-size: 90%;
   --ifm-heading-font-weight: 700;
@@ -59,7 +61,8 @@
   --ifm-navbar-background-color: rgba(11, 9, 20, 0.82);
   --ifm-footer-background-color: #08060f;
 
-  --brand-hero-bg: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 93, 255, 0.25), transparent), #0b0914;
+  --brand-hero-bg:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 93, 255, 0.25), transparent), #0b0914;
   --brand-card-bg: rgba(18, 14, 33, 0.7);
   --brand-card-border: rgba(139, 93, 255, 0.18);
   --brand-card-hover-border: #8b5dff;
@@ -90,7 +93,9 @@
 
 .navbar__link {
   font-weight: 600;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .navbar__link:hover,
@@ -166,7 +171,11 @@
 }
 
 .menu__link--active:not(.menu__link--sublist) {
-  background: linear-gradient(90deg, rgba(139, 93, 255, 0.18) 0%, rgba(106, 66, 194, 0.08) 100%) !important;
+  background: linear-gradient(
+    90deg,
+    rgba(139, 93, 255, 0.18) 0%,
+    rgba(106, 66, 194, 0.08) 100%
+  ) !important;
   color: var(--ifm-color-primary) !important;
   font-weight: 700;
   border-left: 3px solid var(--brand-purple-neon);

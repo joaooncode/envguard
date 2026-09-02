@@ -24,23 +24,34 @@ function TerminalPreview() {
           <span className={styles.termPrompt}>$ </span>
           <span className={styles.termCmd}>envguard scan</span>
         </div>
-        <div className={styles.termComment}>[envguard] Varrendo repositório em busca de arquivos de ambiente sensíveis...</div>
-        <br />
-        <div>
-          <span className={styles.termCrit}>✗ .env</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span className={styles.termCrit}>CRITICAL</span> &nbsp; Arquivo rastreado no Git (commitado)
-        </div>
-        <div>
-          <span className={styles.termWarn}>⚠ .env.production</span> &nbsp;&nbsp;&nbsp; <span className={styles.termWarn}>WARNING</span> &nbsp;&nbsp; Não ignorado no .gitignore
-        </div>
-        <div>
-          <span className={styles.termInfo}>✓ .env.example</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span className={styles.termInfo}>INFO</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Template padrão identificado
+        <div className={styles.termComment}>
+          [envguard] Varrendo repositório em busca de arquivos de ambiente sensíveis...
         </div>
         <br />
         <div>
-          <span className={styles.termCrit}>[ERRO]</span> Encontrado 1 problema CRITICAL e 1 WARNING.
+          <span className={styles.termCrit}>✗ .env</span>{' '}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{' '}
+          <span className={styles.termCrit}>CRITICAL</span> &nbsp; Arquivo rastreado no Git
+          (commitado)
         </div>
         <div>
-          <span className={styles.termComment}>Dica: execute `envguard fix` para adicionar ao .gitignore e remover do cache Git.</span>
+          <span className={styles.termWarn}>⚠ .env.production</span> &nbsp;&nbsp;&nbsp;{' '}
+          <span className={styles.termWarn}>WARNING</span> &nbsp;&nbsp; Não ignorado no .gitignore
+        </div>
+        <div>
+          <span className={styles.termInfo}>✓ .env.example</span>{' '}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span className={styles.termInfo}>INFO</span>{' '}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Template padrão identificado
+        </div>
+        <br />
+        <div>
+          <span className={styles.termCrit}>[ERRO]</span> Encontrado 1 problema CRITICAL e 1
+          WARNING.
+        </div>
+        <div>
+          <span className={styles.termComment}>
+            Dica: execute `envguard fix` para adicionar ao .gitignore e remover do cache Git.
+          </span>
         </div>
       </div>
     </div>
@@ -65,7 +76,8 @@ function HomepageHeader() {
           </Heading>
 
           <p className="hero__subtitle">
-            Evite que arquivos <code>.env</code> e credenciais de ambiente vazem ou cheguem ao histórico de versionamento do Git.
+            Evite que arquivos <code>.env</code> e credenciais de ambiente vazem ou cheguem ao
+            histórico de versionamento do Git.
           </p>
 
           <div
@@ -77,9 +89,18 @@ function HomepageHeader() {
               flexWrap: 'wrap',
             }}
           >
-            <img alt="Go Version" src="https://img.shields.io/badge/Go-1.22%2B-6A42C2?style=flat-square&logo=go&logoColor=white" />
-            <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-8B5DFF?style=flat-square" />
-            <img alt="100% Offline" src="https://img.shields.io/badge/Privacy-100%25%20Offline-green?style=flat-square" />
+            <img
+              alt="Go Version"
+              src="https://img.shields.io/badge/Go-1.22%2B-6A42C2?style=flat-square&logo=go&logoColor=white"
+            />
+            <img
+              alt="License: MIT"
+              src="https://img.shields.io/badge/License-MIT-8B5DFF?style=flat-square"
+            />
+            <img
+              alt="100% Offline"
+              src="https://img.shields.io/badge/Privacy-100%25%20Offline-green?style=flat-square"
+            />
           </div>
 
           <div className={styles.buttons}>
@@ -111,4 +132,3 @@ export default function Home(): ReactNode {
     </Layout>
   );
 }
-
