@@ -43,3 +43,11 @@ _Avoid_: Masking, redacting, cleaning
 **Fixer**:
 The remediation component responsible for automatically generating and applying non-destructive `.gitignore` rules for unignored environment files.
 _Avoid_: Patcher, autofixer, corrector, remediator
+
+**Hook Manager**:
+The component responsible for installing, verifying, and uninstalling local Git pre-commit hook scripts (`.git/hooks/pre-commit`).
+_Avoid_: Hook installer, hook script, hook handler
+
+**Hook Runner**:
+The fast execution mode invoked during Git pre-commit lifecycle to inspect staged repository files and prevent accidental commits of environment secrets.
+_Avoid_: Commit watcher, stage scanner, commit blocker

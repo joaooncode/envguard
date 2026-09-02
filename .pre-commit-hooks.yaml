@@ -1,0 +1,8 @@
+- id: envguard
+  name: envguard
+  description: Prevent .env files and environment secrets from reaching Git
+  entry: envguard hook run
+  language: system
+  pass_filenames: false
+  always_run: true
+  stages: [pre-commit]

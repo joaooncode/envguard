@@ -34,6 +34,10 @@ type Client interface {
 	IsIgnored(dir string, filePath string) (bool, error)
 	// GetFileStatus returns the consolidated FileStatus for a given file.
 	GetFileStatus(dir string, filePath string) (FileStatus, error)
+	// GetStagedFiles returns the list of repository-relative paths currently staged in the index.
+	GetStagedFiles(dir string) ([]string, error)
+	// GetHooksDir returns the path to the Git hooks directory for the repository.
+	GetHooksDir(dir string) (string, error)
 }
 
 // GitClient is the standard implementation of Client.
@@ -216,6 +220,63 @@ func (c *GitClient) GetFileStatus(dir string, filePath string) (FileStatus, erro
 	}, nil
 }
 
+// GetStagedFiles returns the list of repository-relative paths currently staged in the index.
+func (c *GitClient) GetStagedFiles(dir string) ([]string, error) {
+	if !c.IsGitRepo(dir) {
+		return nil, fmt.Errorf("not a git repository: %s", dir)
+	}
+
+	repoRoot, err := c.GetRepoRoot(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	stdout, stderr, exitCode, err := c.runner.Run(repoRoot, "diff", "--name-only", "--cached", "--diff-filter=ACM")
+	if err != nil || exitCode != 0 {
+		return nil, fmt.Errorf("failed to get staged files: %s (exit code %d)", strings.TrimSpace(string(stderr)), exitCode)
+	}
+
+	trimmed := strings.TrimSpace(string(stdout))
+	if trimmed == "" {
+		return []string{}, nil
+	}
+
+	lines := strings.Split(trimmed, "\n")
+	var files []string
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line != "" {
+			files = append(files, filepath.ToSlash(line))
+		}
+	}
+	return files, nil
+}
+
+// GetHooksDir returns the path to the Git hooks directory for the repository.
+func (c *GitClient) GetHooksDir(dir string) (string, error) {
+	if !c.IsGitRepo(dir) {
+		return "", fmt.Errorf("not a git repository: %s", dir)
+	}
+
+	repoRoot, err := c.GetRepoRoot(dir)
+	if err != nil {
+		return "", err
+	}
+
+	stdout, _, exitCode, _ := c.runner.Run(repoRoot, "config", "--get", "core.hooksPath")
+	if exitCode == 0 {
+		customPath := strings.TrimSpace(string(stdout))
+		if customPath != "" {
+			if filepath.IsAbs(customPath) {
+				return filepath.Clean(customPath), nil
+			}
+			return filepath.Clean(filepath.Join(repoRoot, customPath)), nil
+		}
+	}
+
+	return filepath.Clean(filepath.Join(repoRoot, ".git", "hooks")), nil
+}
+
 // DefaultClient is the package-level default Git client.
 var DefaultClient = NewClient()
 
@@ -252,4 +313,14 @@ func IsIgnored(dir string, filePath string) (bool, error) {
 // GetFileStatus returns the consolidated FileStatus using the default client.
 func GetFileStatus(dir string, filePath string) (FileStatus, error) {
 	return DefaultClient.GetFileStatus(dir, filePath)
+}
+
+// GetStagedFiles returns the list of staged files using the default client.
+func GetStagedFiles(dir string) ([]string, error) {
+	return DefaultClient.GetStagedFiles(dir)
+}
+
+// GetHooksDir returns the Git hooks directory using the default client.
+func GetHooksDir(dir string) (string, error) {
+	return DefaultClient.GetHooksDir(dir)
 }

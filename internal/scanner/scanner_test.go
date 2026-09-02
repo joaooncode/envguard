@@ -375,6 +375,10 @@ func (m *mockGitClient) GetRepoRoot(dir string) (string, error)       { return d
 func (m *mockGitClient) IsTracked(dir, filePath string) (bool, error) { return false, nil }
 func (m *mockGitClient) IsStaged(dir, filePath string) (bool, error)  { return false, nil }
 func (m *mockGitClient) IsIgnored(dir, filePath string) (bool, error) { return false, nil }
+func (m *mockGitClient) GetStagedFiles(dir string) ([]string, error)  { return nil, nil }
+func (m *mockGitClient) GetHooksDir(dir string) (string, error) {
+	return filepath.Join(dir, ".git", "hooks"), nil
+}
 func (m *mockGitClient) GetFileStatus(dir, filePath string) (git.FileStatus, error) {
 	if m.statusFn != nil {
 		return m.statusFn(dir, filePath)

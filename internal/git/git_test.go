@@ -215,6 +215,84 @@ func TestGitUnavailable(t *testing.T) {
 	}
 }
 
+func TestGetStagedFiles(t *testing.T) {
+	repoDir := setupTestGitRepo(t)
+	client := NewClient()
+
+	// Initial state: no staged files
+	staged, err := client.GetStagedFiles(repoDir)
+	if err != nil {
+		t.Fatalf("unexpected error on empty stage: %v", err)
+	}
+	if len(staged) != 0 {
+		t.Errorf("expected 0 staged files, got %d", len(staged))
+	}
+
+	// Create and stage files
+	file1 := filepath.Join(repoDir, ".env")
+	file2 := filepath.Join(repoDir, "sub", ".env.local")
+	if err := os.MkdirAll(filepath.Dir(file2), 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(file1, []byte("FOO=1\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(file2, []byte("BAR=2\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	runGitCmd(t, repoDir, "add", ".env", "sub/.env.local")
+
+	staged, err = client.GetStagedFiles(repoDir)
+	if err != nil {
+		t.Fatalf("failed to get staged files: %v", err)
+	}
+	if len(staged) != 2 {
+		t.Fatalf("expected 2 staged files, got %d: %v", len(staged), staged)
+	}
+
+	// Verify non-git directory returns error
+	tempNonGit := t.TempDir()
+	_, err = client.GetStagedFiles(tempNonGit)
+	if err == nil {
+		t.Errorf("expected error on non-git dir for GetStagedFiles")
+	}
+}
+
+func TestGetHooksDir(t *testing.T) {
+	repoDir := setupTestGitRepo(t)
+	client := NewClient()
+
+	hooksDir, err := client.GetHooksDir(repoDir)
+	if err != nil {
+		t.Fatalf("failed to get hooks dir: %v", err)
+	}
+	expectedDefault := filepath.Clean(filepath.Join(repoDir, ".git", "hooks"))
+	if hooksDir != expectedDefault {
+		t.Errorf("expected hooks dir %s, got %s", expectedDefault, hooksDir)
+	}
+
+	// Test custom core.hooksPath
+	customHooksRel := ".githooks"
+	runGitCmd(t, repoDir, "config", "core.hooksPath", customHooksRel)
+
+	hooksDirCustom, err := client.GetHooksDir(repoDir)
+	if err != nil {
+		t.Fatalf("failed to get custom hooks dir: %v", err)
+	}
+	expectedCustom := filepath.Clean(filepath.Join(repoDir, customHooksRel))
+	if hooksDirCustom != expectedCustom {
+		t.Errorf("expected custom hooks dir %s, got %s", expectedCustom, hooksDirCustom)
+	}
+
+	// Test non-git directory
+	tempNonGit := t.TempDir()
+	_, err = client.GetHooksDir(tempNonGit)
+	if err == nil {
+		t.Errorf("expected error on non-git dir for GetHooksDir")
+	}
+}
+
 func TestPackageLevelDefaults(t *testing.T) {
 	// Test package-level helper methods
 	_ = IsAvailable()
@@ -224,4 +302,6 @@ func TestPackageLevelDefaults(t *testing.T) {
 	_, _ = IsStaged(".", ".env")
 	_, _ = IsIgnored(".", ".env")
 	_, _ = GetFileStatus(".", ".env")
+	_, _ = GetStagedFiles(".")
+	_, _ = GetHooksDir(".")
 }
