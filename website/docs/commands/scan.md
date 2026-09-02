@@ -19,10 +19,14 @@ envguard scan [flags]
 
 ## Flags Disponíveis
 
-| Flag           | Tipo     | Descrição                           | Padrão  |
-| :------------- | :------- | :---------------------------------- | :------ |
-| `--format`     | `string` | Formato da saída (`text` ou `json`) | `text`  |
-| `--help`, `-h` | `bool`   | Exibe a ajuda do comando            | `false` |
+| Flag               | Tipo     | Descrição                                                                 | Padrão  |
+| :----------------- | :------- | :------------------------------------------------------------------------ | :------ |
+| `-p`, `--path`     | `string` | Diretório alvo para a varredura                                           | `"."`   |
+| `-f`, `--format`   | `string` | Formato da saída (`text`, `terminal` ou `json`)                           | `text`  |
+| `-s`, `--severity` | `string` | Nível mínimo de severidade (`all`, `info`, `warning`, `high`, `critical`) | `all`   |
+| `-c`, `--config`   | `string` | Caminho para arquivo de configuração customizado                          | `""`    |
+| `--no-color`       | `bool`   | Desativa cores ANSI na saída do terminal                                  | `false` |
+| `--help`, `-h`     | `bool`   | Exibe a ajuda do comando                                                  | `false` |
 
 ---
 
@@ -37,16 +41,27 @@ envguard scan
 #### Exemplo de Saída:
 
 ```text
-envguard v0.1.0
+🛡️  envguard v0.2.0
+Target: ./meu-projeto
+──────────────────────────────────────────────────
 
-Repository: ./meu-projeto
-Scanning...
+Findings:
+  ✗ [CRITICAL] .env
+    Message:     Environment file is tracked by Git (committed in repository history).
+    Suggestions:
+      • Remove file from git tracking: git rm --cached .env
+      • Add to .gitignore
+      • Rotate any leaked credentials
 
-  ✗ .env             CRITICAL   tracked by Git
-  ⚠ .env.local       WARNING    not covered by .gitignore
-  ✓ .env.example     INFO       allowed template file
+  ⚠ [WARNING] .env.local
+    Message:     Environment file exists locally and is not ignored by .gitignore.
+    Suggestions:
+      • Add to .gitignore
 
-Found 2 finding(s) (1 CRITICAL, 1 WARNING)
+──────────────────────────────────────────────────
+Summary:
+  Total Findings: 2 (Critical: 1, High: 0, Warning: 1, Info: 0)
+  Status:         ✗ FAILED
 ```
 
 ---

@@ -61,7 +61,7 @@ envguard version
 Saída esperada:
 
 ```text
-envguard v0.1.0
+envguard v0.2.0
 ```
 
 ---

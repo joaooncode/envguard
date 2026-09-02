@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 6
 title: envguard version
 ---
 
@@ -20,5 +20,5 @@ envguard version
 ## Exemplo de Saída
 
 ```text
-envguard v0.1.0
+envguard v0.2.0
 ```
