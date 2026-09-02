@@ -13,6 +13,9 @@ func setupTestGitRepo(t *testing.T) string {
 	t.Helper()
 
 	tempDir := t.TempDir()
+	if evalDir, err := filepath.EvalSymlinks(tempDir); err == nil {
+		tempDir = evalDir
+	}
 
 	// Configure and initialize git repository
 	runGitCmd(t, tempDir, "init")
