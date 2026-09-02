@@ -88,13 +88,28 @@ Ideal para pipelines e automações. Retorna código de erro (`exit code 1`) cas
 envguard check
 ```
 
-### 3. Saída Estruturada em JSON
+### 3. Inicialização de Configuração e Templates (`init`)
+
+Gera o arquivo de configuração `.envguard.yaml` documentado e, opcionalmente, cria templates `.env.example` sanitizados a partir de variáveis locais:
+
+```bash
+# Inicializar .envguard.yaml padrão
+envguard init
+
+# Inicializar configuração e gerar template .env.example sanitizado
+envguard init --template
+
+# Inicializar em diretório específico sobrescrevendo arquivos existentes
+envguard init --path ./meu-projeto --force
+```
+
+### 4. Saída Estruturada em JSON
 
 ```bash
 envguard scan --format json
 ```
 
-### 4. Verificar Versão
+### 5. Verificar Versão
 
 ```bash
 envguard version
@@ -118,8 +133,6 @@ envguard version
 - **Padrões monitorados:** `.env`, `.env.*`, `*.env`
 - **Exceções seguras permitidas por padrão:** `.env.example`, `.env.sample`, `.env.template`
 
-_(O suporte a configurações personalizadas via arquivo `.envguard.yaml` está no roadmap da v0.2)_
-
 ---
 
 ## Roadmap
@@ -130,7 +143,7 @@ _(O suporte a configurações personalizadas via arquivo `.envguard.yaml` está 
   - [x] Relatórios em Terminal e JSON
   - [x] Códigos de saída para CI/CD
 - [ ] **v0.2.0:**
-  - [ ] `envguard init` (criação automática de `.envguard.yaml` e templates)
+  - [x] `envguard init` (criação automática de `.envguard.yaml` e templates)
   - [ ] `envguard fix` (auxílio na adição automática ao `.gitignore`)
   - [ ] Instalação de _Git Precommit Hooks_
 - [ ] **v0.3.0:**

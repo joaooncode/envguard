@@ -29,5 +29,13 @@ An explicit configuration rule that replaces the calculated severity level for f
 _Avoid_: Custom rule, priority tweak
 
 **Finding**:
-A detected environment file with its assigned severity level, git status, and mitigation suggestions.
+The detected environment file with its assigned severity level, git status, and mitigation suggestions.
 _Avoid_: Vulnerability, issue, report item
+
+**Initializer**:
+The CLI component responsible for bootstrapping repository configuration (`.envguard.yaml`) and safe environment templates (`.env.example`).
+_Avoid_: Setup generator, config creator, scaffolder
+
+**Sanitization**:
+The process of stripping secret values from environment definitions while preserving comments, formatting, and key names to produce safe templates.
+_Avoid_: Masking, redacting, cleaning
