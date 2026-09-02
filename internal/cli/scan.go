@@ -6,16 +6,18 @@ import (
 	"io"
 	"strings"
 
+	"github.com/joaooncode/envguard/internal/config"
 	"github.com/joaooncode/envguard/internal/reporter"
 	"github.com/joaooncode/envguard/internal/scanner"
 )
 
 // scanConfig holds the parsed options for scan/check commands.
 type scanConfig struct {
-	path     string
-	format   string
-	severity string
-	noColor  bool
+	path       string
+	configPath string
+	format     string
+	severity   string
+	noColor    bool
 }
 
 func parseSeverity(s string) (scanner.Severity, bool) {
@@ -57,6 +59,8 @@ func runScanCommand(args []string, stdout, stderr io.Writer, scannerInstance *sc
 	var cfg scanConfig
 	fs.StringVar(&cfg.path, "path", ".", "Target directory path to scan")
 	fs.StringVar(&cfg.path, "p", ".", "Target directory path to scan (shorthand)")
+	fs.StringVar(&cfg.configPath, "config", "", "Path to custom configuration file")
+	fs.StringVar(&cfg.configPath, "c", "", "Path to custom configuration file (shorthand)")
 	fs.StringVar(&cfg.format, "format", "text", "Output format: text|terminal|json")
 	fs.StringVar(&cfg.format, "f", "text", "Output format (shorthand)")
 	fs.StringVar(&cfg.severity, "severity", "all", "Minimum severity level to report (info, warning, high, critical)")
@@ -86,8 +90,15 @@ func runScanCommand(args []string, stdout, stderr io.Writer, scannerInstance *sc
 		return ExitCodeUsageError
 	}
 
+	// Load configuration
+	appConfig, _, err := config.DiscoverAndLoad(cfg.path, cfg.configPath)
+	if err != nil {
+		fmt.Fprintf(stderr, "Error: %v\n", err)
+		return ExitCodeUsageError
+	}
+
 	if scannerInstance == nil {
-		scannerInstance = scanner.DefaultScanner
+		scannerInstance = scanner.NewWithConfig(nil, nil, appConfig)
 	}
 
 	result, err := scannerInstance.Scan(cfg.path)

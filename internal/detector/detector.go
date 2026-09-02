@@ -20,20 +20,32 @@ var DefaultAllowlist = []string{
 
 // Detector evaluates file paths against environment patterns and allowlist rules.
 type Detector struct {
-	allowlist []string
+	customPatterns []string
+	allowlist      []string
 }
 
 // New creates a Detector initialized with the default allowlist.
 func New() *Detector {
 	return &Detector{
-		allowlist: DefaultAllowlist,
+		customPatterns: make([]string, 0),
+		allowlist:      DefaultAllowlist,
 	}
 }
 
-// NewWithAllowlist creates a Detector with a custom allowlist.
+// NewWithAllowlist creates a Detector with a custom allowlist appended to defaults.
 func NewWithAllowlist(allowlist []string) *Detector {
+	return NewWithPatterns(nil, allowlist)
+}
+
+// NewWithPatterns creates a Detector with custom environment patterns and allowlist appended to defaults.
+func NewWithPatterns(customPatterns []string, customAllowlist []string) *Detector {
+	combinedAllowlist := make([]string, 0, len(DefaultAllowlist)+len(customAllowlist))
+	combinedAllowlist = append(combinedAllowlist, DefaultAllowlist...)
+	combinedAllowlist = append(combinedAllowlist, customAllowlist...)
+
 	return &Detector{
-		allowlist: allowlist,
+		customPatterns: customPatterns,
+		allowlist:      combinedAllowlist,
 	}
 }
 
@@ -60,6 +72,14 @@ func (d *Detector) IsEnvFile(path string) bool {
 	}
 
 	lower := strings.ToLower(base)
+
+	// Check custom patterns first if configured
+	for _, pattern := range d.customPatterns {
+		patternLower := strings.ToLower(pattern)
+		if matchAllowlistPattern(patternLower, lower) {
+			return true
+		}
+	}
 
 	// Direct match: .env
 	if lower == ".env" {

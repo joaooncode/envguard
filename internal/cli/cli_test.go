@@ -292,3 +292,78 @@ func TestCLICheckCommand(t *testing.T) {
 		}
 	})
 }
+
+func TestCLIConfigFileIntegration(t *testing.T) {
+	t.Run("auto-discovered .envguard.yaml with allowlist", func(t *testing.T) {
+		tmpDir := t.TempDir()
+
+		// Write .envguard.yaml allowing .env.custom
+		configContent := `
+detector:
+  allowlist:
+    - ".env.custom"
+`
+		if err := os.WriteFile(filepath.Join(tmpDir, ".envguard.yaml"), []byte(configContent), 0644); err != nil {
+			t.Fatal(err)
+		}
+
+		// Write .env.custom (which would normally fail without config)
+		if err := os.WriteFile(filepath.Join(tmpDir, ".env.custom"), []byte("CUSTOM=1"), 0644); err != nil {
+			t.Fatal(err)
+		}
+
+		var stdout, stderr bytes.Buffer
+		code := cli.Run([]string{"scan", "--path", tmpDir, "--no-color"}, &stdout, &stderr)
+
+		if code != cli.ExitCodeSuccess {
+			t.Fatalf("expected exit code %d (PASSED due to allowlist in .envguard.yaml), got %d. stderr: %s", cli.ExitCodeSuccess, code, stderr.String())
+		}
+		if !strings.Contains(stdout.String(), "PASSED") {
+			t.Fatalf("expected PASSED in output, got: %s", stdout.String())
+		}
+	})
+
+	t.Run("explicit --config flag", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		configFile := filepath.Join(tmpDir, "custom-rules.yaml")
+
+		configContent := `
+detector:
+  custom_patterns:
+    - "*.env.vault"
+`
+		if err := os.WriteFile(configFile, []byte(configContent), 0644); err != nil {
+			t.Fatal(err)
+		}
+
+		if err := os.WriteFile(filepath.Join(tmpDir, "app.env.vault"), []byte("SECRET=1"), 0644); err != nil {
+			t.Fatal(err)
+		}
+
+		var stdout, stderr bytes.Buffer
+		code := cli.Run([]string{"check", "--path", tmpDir, "--config", configFile, "--no-color"}, &stdout, &stderr)
+
+		if code != cli.ExitCodeFindingsFound {
+			t.Fatalf("expected exit code %d (FINDINGS due to custom pattern), got %d", cli.ExitCodeFindingsFound, code)
+		}
+		if !strings.Contains(stdout.String(), "app.env.vault") {
+			t.Fatalf("expected app.env.vault in output, got: %s", stdout.String())
+		}
+	})
+
+	t.Run("invalid config file returns UsageError", func(t *testing.T) {
+		tmpDir := t.TempDir()
+		configFile := filepath.Join(tmpDir, "bad.yaml")
+		_ = os.WriteFile(configFile, []byte("scanner: [invalid"), 0644)
+
+		var stdout, stderr bytes.Buffer
+		code := cli.Run([]string{"scan", "--path", tmpDir, "--config", configFile}, &stdout, &stderr)
+
+		if code != cli.ExitCodeUsageError {
+			t.Fatalf("expected exit code %d for invalid config file, got %d", cli.ExitCodeUsageError, code)
+		}
+		if !strings.Contains(stderr.String(), "Error:") {
+			t.Fatalf("expected error message in stderr, got: %s", stderr.String())
+		}
+	})
+}

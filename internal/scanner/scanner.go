@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/joaooncode/envguard/internal/config"
 	"github.com/joaooncode/envguard/internal/detector"
 	"github.com/joaooncode/envguard/internal/git"
 )
@@ -22,27 +24,48 @@ var IgnoredDirectories = map[string]bool{
 
 // Scanner coordinates filesystem traversal, environment detection, and Git status inspection.
 type Scanner struct {
-	gitClient git.Client
-	detector  *detector.Detector
+	gitClient  git.Client
+	detector   *detector.Detector
+	cfg        *config.Config
+	ignoreDirs map[string]bool
 }
 
 // New creates a new Scanner instance with the provided git client and detector.
 func New(gitClient git.Client, det *detector.Detector) *Scanner {
+	return NewWithConfig(gitClient, det, nil)
+}
+
+// NewWithConfig creates a Scanner initialized with configuration settings.
+func NewWithConfig(gitClient git.Client, det *detector.Detector, cfg *config.Config) *Scanner {
 	if gitClient == nil {
 		gitClient = git.NewClient()
 	}
-	if det == nil {
-		det = detector.New()
+	if cfg == nil {
+		cfg = config.NewDefault()
 	}
+	if det == nil {
+		det = detector.NewWithPatterns(cfg.Detector.CustomPatterns, cfg.Detector.Allowlist)
+	}
+
+	ignoreMap := make(map[string]bool)
+	for k, v := range IgnoredDirectories {
+		ignoreMap[k] = v
+	}
+	for _, dir := range cfg.Scanner.IgnoreDirs {
+		ignoreMap[dir] = true
+	}
+
 	return &Scanner{
-		gitClient: gitClient,
-		detector:  det,
+		gitClient:  gitClient,
+		detector:   det,
+		cfg:        cfg,
+		ignoreDirs: ignoreMap,
 	}
 }
 
 // NewDefault creates a Scanner configured with default Git and Detector implementations.
 func NewDefault() *Scanner {
-	return New(git.NewClient(), detector.New())
+	return NewWithConfig(nil, nil, nil)
 }
 
 // Scan recursively walks the directory and classifies any detected environment files.
@@ -76,7 +99,7 @@ func (s *Scanner) Scan(dir string) (*Result, error) {
 		}
 
 		if d.IsDir() {
-			if currentPath != absDir && IgnoredDirectories[d.Name()] {
+			if currentPath != absDir && s.ignoreDirs[d.Name()] {
 				return filepath.SkipDir
 			}
 			return nil
@@ -151,6 +174,37 @@ func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllow
 		message = "Environment file exists locally and is not ignored by .gitignore."
 		suggestions = []string{
 			"Add to .gitignore",
+		}
+	}
+
+	// Check if any severity override matches this file path or base name
+	baseName := filepath.Base(relPath)
+	for _, override := range s.cfg.Detector.SeverityOverrides {
+		patternLower := strings.ToLower(override.Pattern)
+		baseLower := strings.ToLower(baseName)
+		relLower := strings.ToLower(relPath)
+
+		matched := false
+		if patternLower == baseLower || patternLower == relLower {
+			matched = true
+		} else if m, err := filepath.Match(patternLower, baseLower); err == nil && m {
+			matched = true
+		} else if m, err := filepath.Match(patternLower, relLower); err == nil && m {
+			matched = true
+		}
+
+		if matched {
+			switch strings.ToLower(override.Severity) {
+			case "info":
+				severity = SeverityInfo
+			case "warning", "warn":
+				severity = SeverityWarning
+			case "high":
+				severity = SeverityHigh
+			case "critical":
+				severity = SeverityCritical
+			}
+			break
 		}
 	}
 

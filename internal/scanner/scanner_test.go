@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/joaooncode/envguard/internal/config"
 	"github.com/joaooncode/envguard/internal/detector"
 	"github.com/joaooncode/envguard/internal/git"
 )
@@ -408,5 +409,70 @@ func TestScannerCustomComponents(t *testing.T) {
 	}
 	if res.Summary.Info != 1 {
 		t.Errorf("expected 1 Info finding for custom allowed file, got %d", res.Summary.Info)
+	}
+}
+
+func TestScannerWithConfig(t *testing.T) {
+	tempDir := t.TempDir()
+
+	// 1. Setup files:
+	// a. Custom ignored dir
+	customIgnoredDir := filepath.Join(tempDir, "custom_vendor")
+	if err := os.MkdirAll(customIgnoredDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	_ = os.WriteFile(filepath.Join(customIgnoredDir, ".env"), []byte("IGNORED=1"), 0644)
+
+	// b. Custom env pattern
+	_ = os.WriteFile(filepath.Join(tempDir, "app.env.vault"), []byte("SECRET=1"), 0644)
+
+	// c. Custom allowlist
+	_ = os.WriteFile(filepath.Join(tempDir, ".env.dist"), []byte("DIST=1"), 0644)
+
+	// d. Severity override (.env.test normally Warning in non-git, override to Critical)
+	_ = os.WriteFile(filepath.Join(tempDir, ".env.test"), []byte("TEST=1"), 0644)
+
+	cfg := &config.Config{
+		Scanner: config.ScannerConfig{
+			IgnoreDirs: []string{"custom_vendor"},
+		},
+		Detector: config.DetectorConfig{
+			CustomPatterns: []string{"*.env.vault"},
+			Allowlist:      []string{".env.dist"},
+			SeverityOverrides: []config.SeverityOverride{
+				{Pattern: ".env.test", Severity: "critical"},
+			},
+		},
+	}
+
+	s := NewWithConfig(nil, nil, cfg)
+	res, err := s.Scan(tempDir)
+	if err != nil {
+		t.Fatalf("scan failed: %v", err)
+	}
+
+	findingsMap := make(map[string]Finding)
+	for _, f := range res.Findings {
+		findingsMap[f.Path] = f
+	}
+
+	// custom_vendor/.env should NOT be found
+	if _, ok := findingsMap["custom_vendor/.env"]; ok {
+		t.Errorf("expected custom_vendor/.env to be ignored, but was found")
+	}
+
+	// app.env.vault should be detected
+	if _, ok := findingsMap["app.env.vault"]; !ok {
+		t.Errorf("expected app.env.vault to be detected as env file")
+	}
+
+	// .env.dist should be allowed (Info)
+	if f, ok := findingsMap[".env.dist"]; !ok || f.Severity != SeverityInfo {
+		t.Errorf("expected .env.dist to be allowed (Info), got %+v", f)
+	}
+
+	// .env.test should have overridden severity Critical
+	if f, ok := findingsMap[".env.test"]; !ok || f.Severity != SeverityCritical {
+		t.Errorf("expected .env.test to be overridden to Critical, got %+v", f)
 	}
 }
