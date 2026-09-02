@@ -5,14 +5,16 @@ import (
 	"io"
 	"strings"
 
+	"github.com/joaooncode/envguard/internal/git"
 	"github.com/joaooncode/envguard/internal/scanner"
 )
 
 // App encapsulates the CLI execution environment and dependencies.
 type App struct {
-	stdout  io.Writer
-	stderr  io.Writer
-	scanner *scanner.Scanner
+	stdout    io.Writer
+	stderr    io.Writer
+	scanner   *scanner.Scanner
+	gitClient git.Client
 }
 
 // Option configures an App instance.
@@ -22,6 +24,13 @@ type Option func(*App)
 func WithScanner(s *scanner.Scanner) Option {
 	return func(a *App) {
 		a.scanner = s
+	}
+}
+
+// WithGitClient sets a custom Git Client instance (useful for testing).
+func WithGitClient(g git.Client) Option {
+	return func(a *App) {
+		a.gitClient = g
 	}
 }
 
@@ -73,6 +82,9 @@ func (a *App) Run(args []string) int {
 	case "fix":
 		return runFixCommand(args[1:], a.stdout, a.stderr, a.scanner)
 
+	case "hook":
+		return runHookCommand(args[1:], a.stdout, a.stderr, a.gitClient)
+
 	default:
 		fmt.Fprintf(a.stderr, "Error: unknown command or flag %q\n\n", args[0])
 		a.printHelpTo(a.stderr)
@@ -94,6 +106,7 @@ Available Commands:
   scan       Scan a directory for unprotected environment files
   check      Run verification optimized for CI/CD pipelines
   fix        Automatically add unprotected environment files to .gitignore
+  hook       Manage Git pre-commit hooks and perform staged inspections
   init       Initialize configuration file and safe template files
   version    Show current envguard version
   help       Show help for envguard commands
@@ -114,6 +127,11 @@ Fix Flags:
   -c, --config     Path to custom configuration file
       --no-color   Disable ANSI color escape codes in terminal output
 
+Hook Flags (see 'envguard hook --help' for details):
+  install          Install executable pre-commit hook into .git/hooks/pre-commit
+  run              Inspect currently staged files and block commits with sensitive env files
+  uninstall        Remove envguard pre-commit hook from .git/hooks/pre-commit
+
 Init Flags:
   -p, --path           Target directory path to initialize (default: ".")
   -f, --force          Overwrite existing configuration or template files
@@ -127,7 +145,9 @@ Examples:
   envguard check --path . --severity high
   envguard fix
   envguard fix --dry-run
-  envguard fix --path ./my-project
+  envguard hook install
+  envguard hook run
+  envguard hook uninstall
   envguard init
   envguard init --template
   envguard init --path ./my-project --force
