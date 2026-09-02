@@ -39,3 +39,7 @@ _Avoid_: Setup generator, config creator, scaffolder
 **Sanitization**:
 The process of stripping secret values from environment definitions while preserving comments, formatting, and key names to produce safe templates.
 _Avoid_: Masking, redacting, cleaning
+
+**Fixer**:
+The remediation component responsible for automatically generating and applying non-destructive `.gitignore` rules for unignored environment files.
+_Avoid_: Patcher, autofixer, corrector, remediator

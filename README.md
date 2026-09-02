@@ -88,7 +88,22 @@ Ideal para pipelines e automações. Retorna código de erro (`exit code 1`) cas
 envguard check
 ```
 
-### 3. Inicialização de Configuração e Templates (`init`)
+### 3. Remediação Automática (`fix`)
+
+Adiciona automaticamente padrões correspondentes para arquivos desprotegidos (`WARNING`) no `.gitignore` da raiz, preservando comentários e formatação existente:
+
+```bash
+# Aplicar correções no .gitignore
+envguard fix
+
+# Simular alterações propostas sem modificar arquivos
+envguard fix --dry-run
+
+# Executar em diretório específico
+envguard fix --path ./meu-projeto
+```
+
+### 4. Inicialização de Configuração e Templates (`init`)
 
 Gera o arquivo de configuração `.envguard.yaml` documentado e, opcionalmente, cria templates `.env.example` sanitizados a partir de variáveis locais:
 
@@ -103,13 +118,13 @@ envguard init --template
 envguard init --path ./meu-projeto --force
 ```
 
-### 4. Saída Estruturada em JSON
+### 5. Saída Estruturada em JSON
 
 ```bash
 envguard scan --format json
 ```
 
-### 5. Verificar Versão
+### 6. Verificar Versão
 
 ```bash
 envguard version
@@ -123,7 +138,7 @@ envguard version
 | :------------------ | :---------------------------------------------------------------------- | :--------------------------------------------------------------------- |
 | **`CRITICAL`**      | Arquivo de ambiente rastreado (_tracked_) no histórico Git              | Remover do rastreamento (`git rm --cached`) e rotacionar credenciais   |
 | **`HIGH`**          | Arquivo de ambiente adicionado para commit (_staged_)                   | Retirar da stage (`git reset HEAD <file>`) e adicionar ao `.gitignore` |
-| **`WARNING`**       | Arquivo existe localmente mas **não está** no `.gitignore`              | Adicionar padrão correspondente ao `.gitignore`                        |
+| **`WARNING`**       | Arquivo existe localmente mas **não está** no `.gitignore`              | Executar `envguard fix` ou adicionar padrão ao `.gitignore`            |
 | **`INFO` / `SAFE`** | Arquivo protegido ou template permitido (`.env.example`, `.env.sample`) | Nenhuma ação necessária                                                |
 
 ---
@@ -144,7 +159,7 @@ envguard version
   - [x] Códigos de saída para CI/CD
 - [ ] **v0.2.0:**
   - [x] `envguard init` (criação automática de `.envguard.yaml` e templates)
-  - [ ] `envguard fix` (auxílio na adição automática ao `.gitignore`)
+  - [x] `envguard fix` (auxílio na adição automática ao `.gitignore`)
   - [ ] Instalação de _Git Precommit Hooks_
 - [ ] **v0.3.0:**
   - [ ] Secret scanning básico por conteúdo & cálculo de entropia
