@@ -59,4 +59,3 @@
 
 - [ ] Nenhuma breaking change.
 - Observações:
-
