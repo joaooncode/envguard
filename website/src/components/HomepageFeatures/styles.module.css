@@ -1,94 +1,98 @@
 .featuresSection {
-  padding: 5rem 0;
+  padding: 4.5rem 0;
   width: 100%;
-  position: relative;
+  background-color: var(--ifm-background-color);
+  border-top: 1px solid var(--border-subtle);
 }
 
 .sectionHeader {
   text-align: center;
-  margin-bottom: 3.5rem;
+  margin-bottom: 3rem;
 }
 
 .sectionTitle {
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 800;
-  letter-spacing: -0.5px;
-  margin-bottom: 0.75rem;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  color: var(--nordic-indigo);
+}
+
+[data-theme='dark'] .sectionTitle {
+  color: #f8fafc;
 }
 
 .sectionSubtitle {
-  font-size: 1.15rem;
-  color: var(--ifm-color-emphasis-700);
-  max-width: 680px;
+  font-size: 1.05rem;
+  color: #64748b;
+  max-width: 580px;
   margin: 0 auto;
 }
 
-.featureCol {
-  margin-bottom: 2rem;
+[data-theme='dark'] .sectionSubtitle {
+  color: #94a3b8;
+}
+
+.pillarCol {
+  margin-bottom: 1.5rem;
   display: flex;
 }
 
-.featureCard {
+.pillarCard {
   width: 100%;
-  padding: 2rem;
-  border-radius: 16px;
-  background: var(--brand-card-bg);
-  border: 1px solid var(--brand-card-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  padding: 1.75rem;
+  border-radius: 8px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
   display: flex;
   flex-direction: column;
 }
 
-.featureCard:hover {
-  transform: translateY(-5px);
-  border-color: var(--brand-purple-neon);
-  box-shadow: var(--brand-glow);
+.pillarCard:hover {
+  border-color: var(--nordic-indigo);
+  transform: translateY(-2px);
 }
 
-.featureHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.25rem;
-}
-
-.featureIcon {
-  font-size: 2rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(139, 93, 255, 0.12);
-  border: 1px solid rgba(139, 93, 255, 0.2);
-}
-
-.featureBadge {
-  font-size: 0.75rem;
+.pillarTag {
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 0.25rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(139, 93, 255, 0.15);
-  color: var(--brand-purple-neon);
-  border: 1px solid rgba(139, 93, 255, 0.25);
+  letter-spacing: 0.05em;
+  color: var(--nordic-indigo);
+  background-color: var(--vanilla-cream);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  align-self: flex-start;
+  margin-bottom: 1rem;
 }
 
-.featureTitle {
-  font-size: 1.25rem;
+[data-theme='dark'] .pillarTag {
+  background-color: rgba(255, 244, 212, 0.12);
+  color: var(--vanilla-cream);
+}
+
+.pillarTitle {
+  font-size: 1.18rem;
   font-weight: 700;
-  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+  color: #0f172a;
 }
 
-.featureDescription {
-  font-size: 0.95rem;
+[data-theme='dark'] .pillarTitle {
+  color: #f1f5f9;
+}
+
+.pillarDescription {
+  font-size: 0.9rem;
   line-height: 1.6;
-  color: var(--ifm-color-emphasis-700);
+  color: #64748b;
   margin-bottom: 0;
+}
+
+[data-theme='dark'] .pillarDescription {
+  color: #94a3b8;
 }
