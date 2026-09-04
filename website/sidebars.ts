@@ -4,19 +4,19 @@ const sidebars: SidebarsConfig = {
   docsSidebar: [
     {
       type: 'category',
-      label: '🚀 Primeiros Passos',
+      label: 'Primeiros Passos',
       collapsed: false,
       items: ['intro', 'installation', 'quickstart'],
     },
     {
       type: 'category',
-      label: '🛡️ Conceitos & Segurança',
+      label: 'Conceitos & Segurança',
       collapsed: false,
       items: ['severity-levels'],
     },
     {
       type: 'category',
-      label: '💻 Comandos da CLI',
+      label: 'Comandos da CLI',
       collapsed: false,
       items: [
         'commands/scan',
@@ -29,19 +29,19 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: '⚙️ Configuração',
+      label: 'Configuração',
       collapsed: false,
       items: ['configuration'],
     },
     {
       type: 'category',
-      label: '🔄 Automação & CI/CD',
+      label: 'Automação & CI/CD',
       collapsed: false,
       items: ['cicd-integration'],
     },
     {
       type: 'category',
-      label: '🤝 Comunidade',
+      label: 'Comunidade',
       collapsed: true,
       items: ['contributing'],
     },
@@ -49,3 +49,4 @@ const sidebars: SidebarsConfig = {
 };
 
 export default sidebars;
+

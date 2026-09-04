@@ -1,10 +1,10 @@
 /**
- * envguard Custom Design System & Theme
+ * envguard Design System
  * Palette:
- * - #FFF7D1 (Cream / Glow Accent)
- * - #8B5DFF (Electric Purple)
- * - #6A42C2 (Royal Purple)
- * - #563A9C (Deep Purple)
+ * - Nordic Indigo: #263BAA (Primary Brand)
+ * - Vanilla Cream: #FFF4D4 (Warm Accent & High-Contrast Cards)
+ * - Nordic Indigo Deep: #1B2A7A
+ * - Nordic Indigo Dark: #0A0D1D
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
@@ -13,89 +13,87 @@
   --ifm-font-family-base:
     'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, sans-serif;
-  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
-  --ifm-code-font-size: 90%;
+  --ifm-font-family-monospace: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
+  --ifm-code-font-size: 88%;
   --ifm-heading-font-weight: 700;
-  --ifm-line-height-base: 1.65;
+  --ifm-line-height-base: 1.6;
 
-  /* Brand Palette - Light Mode */
-  --ifm-color-primary: #6a42c2;
-  --ifm-color-primary-dark: #563a9c;
-  --ifm-color-primary-darker: #462e82;
-  --ifm-color-primary-darkest: #322060;
-  --ifm-color-primary-light: #8b5dff;
-  --ifm-color-primary-lighter: #9e75ff;
-  --ifm-color-primary-lightest: #be9eff;
+  /* Nordic Indigo & Vanilla Cream Tokens */
+  --nordic-indigo: #263baa;
+  --nordic-indigo-deep: #1b2a7a;
+  --nordic-indigo-dark: #0a0d1d;
+  --nordic-indigo-surface: #11162e;
+  --vanilla-cream: #fff4d4;
+  --vanilla-cream-warm: #fffdf7;
+  --vanilla-cream-surface: #fff9e6;
 
-  --brand-cream: #fff7d1;
-  --brand-purple-neon: #8b5dff;
-  --brand-purple-royal: #6a42c2;
-  --brand-purple-deep: #563a9c;
+  /* Light Theme */
+  --ifm-color-primary: #263baa;
+  --ifm-color-primary-dark: #1f308f;
+  --ifm-color-primary-darker: #1b2a7a;
+  --ifm-color-primary-darkest: #121d54;
+  --ifm-color-primary-light: #3a4ec0;
+  --ifm-color-primary-lighter: #4c60cd;
+  --ifm-color-primary-lightest: #7686dc;
 
-  --ifm-background-color: #fcfbfe;
+  --ifm-background-color: #fffdf7;
   --ifm-background-surface-color: #ffffff;
-  --ifm-navbar-background-color: rgba(255, 255, 255, 0.85);
-  --ifm-footer-background-color: #1a162b;
+  --ifm-navbar-background-color: rgba(255, 253, 247, 0.92);
+  --ifm-footer-background-color: #0a0d1d;
 
-  --brand-hero-bg: radial-gradient(circle at 50% 0%, #20173d 0%, #0f0a1c 100%);
-  --brand-card-bg: rgba(255, 255, 255, 0.9);
-  --brand-card-border: rgba(106, 66, 194, 0.15);
-  --brand-card-hover-border: #8b5dff;
-  --brand-glow: 0 8px 32px 0 rgba(106, 66, 194, 0.15);
-
-  --docusaurus-highlighted-code-line-bg: rgba(106, 66, 194, 0.1);
+  --border-subtle: #e2e8f0;
+  --card-bg: #ffffff;
+  --card-border: rgba(38, 59, 170, 0.1);
+  --hero-bg: #fffdf7;
 }
 
 [data-theme='dark'] {
-  /* Brand Palette - Dark Mode */
-  --ifm-color-primary: #8b5dff;
-  --ifm-color-primary-dark: #6a42c2;
-  --ifm-color-primary-darker: #563a9c;
-  --ifm-color-primary-darkest: #3e2675;
-  --ifm-color-primary-light: #a37dff;
-  --ifm-color-primary-lighter: #b89bff;
-  --ifm-color-primary-lightest: #dcd0ff;
+  /* Dark Theme */
+  --ifm-color-primary: #6c80ea;
+  --ifm-color-primary-dark: #556ce6;
+  --ifm-color-primary-darker: #4a62e4;
+  --ifm-color-primary-darkest: #2a45db;
+  --ifm-color-primary-light: #8394ee;
+  --ifm-color-primary-lighter: #8f9ff0;
+  --ifm-color-primary-lightest: #b3bef6;
 
-  --ifm-background-color: #0b0914;
-  --ifm-background-surface-color: #120e21;
-  --ifm-navbar-background-color: rgba(11, 9, 20, 0.82);
-  --ifm-footer-background-color: #08060f;
+  --ifm-background-color: #0a0d1d;
+  --ifm-background-surface-color: #11162e;
+  --ifm-navbar-background-color: rgba(10, 13, 29, 0.92);
+  --ifm-footer-background-color: #060814;
 
-  --brand-hero-bg:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139, 93, 255, 0.25), transparent), #0b0914;
-  --brand-card-bg: rgba(18, 14, 33, 0.7);
-  --brand-card-border: rgba(139, 93, 255, 0.18);
-  --brand-card-hover-border: #8b5dff;
-  --brand-glow: 0 8px 32px 0 rgba(139, 93, 255, 0.18);
-
-  --docusaurus-highlighted-code-line-bg: rgba(139, 93, 255, 0.2);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --card-bg: #11162e;
+  --card-border: rgba(108, 128, 234, 0.16);
+  --hero-bg: #0a0d1d;
 }
 
 /* =========================================
-   Glassmorphism Navbar
+   Clean Editorial Navbar
    ========================================= */
 .navbar {
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--brand-card-border);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: none;
+  height: 64px;
 }
 
 .navbar__title {
   font-weight: 800;
-  letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #8b5dff 0%, #6a42c2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+  color: var(--nordic-indigo);
+  font-size: 1.25rem;
+}
+
+[data-theme='dark'] .navbar__title {
+  color: #ffffff;
 }
 
 .navbar__link {
   font-weight: 600;
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
+  font-size: 0.92rem;
+  transition: color 0.15s ease;
 }
 
 .navbar__link:hover,
@@ -104,142 +102,147 @@
 }
 
 /* =========================================
-   Search Bar Customization
+   Search Bar
    ========================================= */
 .navbar__search-input {
-  border-radius: 9999px !important;
-  border: 1px solid var(--brand-card-border) !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border-subtle) !important;
   background-color: var(--ifm-background-surface-color) !important;
-  padding-left: 2.2rem !important;
-  transition: all 0.25s ease !important;
+  font-size: 0.85rem !important;
+  padding: 0.4rem 0.8rem 0.4rem 2rem !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
 }
 
 .navbar__search-input:focus {
-  border-color: var(--brand-purple-neon) !important;
-  box-shadow: 0 0 0 3px rgba(139, 93, 255, 0.25) !important;
-  width: 240px !important;
+  border-color: var(--ifm-color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(38, 59, 170, 0.15) !important;
 }
 
 /* =========================================
-   Modern Buttons
+   Buttons
    ========================================= */
 .button {
-  font-weight: 700;
-  border-radius: 12px;
-  padding: 0.75rem 1.6rem;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.65rem 1.35rem;
+  font-size: 0.95rem;
+  transition: all 0.15s ease;
+  letter-spacing: -0.01em;
 }
 
 .button--primary {
-  background: linear-gradient(135deg, #8b5dff 0%, #6a42c2 100%);
-  border: none;
+  background-color: var(--nordic-indigo);
+  border: 1px solid var(--nordic-indigo);
   color: #ffffff !important;
-  box-shadow: 0 4px 15px rgba(106, 66, 194, 0.35);
 }
 
 .button--primary:hover {
-  background: linear-gradient(135deg, #9b74ff 0%, #7c52d8 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 93, 255, 0.45);
+  background-color: var(--nordic-indigo-deep);
+  border-color: var(--nordic-indigo-deep);
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .button--primary {
+  background-color: #3b52d4;
+  border-color: #3b52d4;
+  color: #ffffff !important;
+}
+
+[data-theme='dark'] .button--primary:hover {
+  background-color: #263baa;
+  border-color: #263baa;
 }
 
 .button--secondary {
-  background: rgba(139, 93, 255, 0.12);
+  background-color: transparent;
   color: var(--ifm-color-primary) !important;
-  border: 1px solid var(--brand-card-border);
-  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-subtle);
 }
 
 .button--secondary:hover {
-  background: rgba(139, 93, 255, 0.2);
-  border-color: var(--brand-purple-neon);
-  transform: translateY(-2px);
+  background-color: var(--vanilla-cream-surface);
+  border-color: var(--nordic-indigo);
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] .button--secondary {
+  color: #e2e8f0 !important;
+  border-color: var(--border-subtle);
+}
+
+[data-theme='dark'] .button--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--ifm-color-primary);
 }
 
 /* =========================================
-   Documentation Sidebar & Content
+   Documentation Sidebar
    ========================================= */
 .theme-doc-sidebar-container {
-  border-right: 1px solid var(--brand-card-border) !important;
+  border-right: 1px solid var(--border-subtle) !important;
 }
 
 .menu__link {
-  border-radius: 8px;
+  border-radius: 6px;
   font-weight: 500;
-  margin: 2px 0;
-  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  margin: 1px 0;
+  padding: 0.4rem 0.75rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .menu__link--active:not(.menu__link--sublist) {
-  background: linear-gradient(
-    90deg,
-    rgba(139, 93, 255, 0.18) 0%,
-    rgba(106, 66, 194, 0.08) 100%
-  ) !important;
-  color: var(--ifm-color-primary) !important;
+  background-color: rgba(38, 59, 170, 0.08) !important;
+  color: var(--nordic-indigo) !important;
   font-weight: 700;
-  border-left: 3px solid var(--brand-purple-neon);
 }
 
-.menu__link:hover:not(.menu__link--active) {
-  background-color: rgba(139, 93, 255, 0.08);
-  color: var(--ifm-color-primary);
+[data-theme='dark'] .menu__link--active:not(.menu__link--sublist) {
+  background-color: rgba(108, 128, 234, 0.12) !important;
+  color: #8394ee !important;
+}
+
+.menu__list-item-collapsible {
+  font-weight: 600;
+  font-size: 0.92rem;
 }
 
 /* =========================================
-   Modern Code Blocks & Admonitions
+   Code Blocks & Admonitions
    ========================================= */
 div[class^='codeBlockContainer_'] {
-  border-radius: 12px;
-  border: 1px solid var(--brand-card-border);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--border-subtle);
+  box-shadow: none;
 }
 
 .alert {
-  border-radius: 12px;
+  border-radius: 8px;
   border-width: 1px;
-  border-left-width: 5px;
-  backdrop-filter: blur(8px);
+  border-left-width: 4px;
 }
 
 .alert--info {
-  --ifm-alert-background-color: rgba(139, 93, 255, 0.08);
-  --ifm-alert-border-color: #8b5dff;
-}
-
-.alert--success {
-  --ifm-alert-background-color: rgba(16, 185, 129, 0.08);
-  --ifm-alert-border-color: #10b981;
+  background-color: rgba(38, 59, 170, 0.05);
+  border-color: var(--nordic-indigo);
 }
 
 .alert--warning {
-  --ifm-alert-background-color: rgba(255, 193, 7, 0.08);
-  --ifm-alert-border-color: #f59e0b;
+  background-color: rgba(255, 244, 212, 0.7);
+  border-color: #eab308;
+  color: #713f12;
+}
+
+[data-theme='dark'] .alert--warning {
+  background-color: rgba(234, 179, 8, 0.1);
+  color: #fef08a;
 }
 
 /* =========================================
-   Custom Scrollbar & Highlights
+   Selection
    ========================================= */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(106, 66, 194, 0.3);
-  border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--brand-purple-neon);
-}
-
 ::selection {
-  background: #8b5dff;
+  background: var(--nordic-indigo);
   color: #ffffff;
 }
+

@@ -1,118 +1,93 @@
-import type { ReactNode } from 'react';
-import clsx from 'clsx';
+import { useState, type ReactNode } from 'react';
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
 import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
 
-function TerminalPreview() {
+function GitInspectionShowcase() {
   return (
-    <div className={styles.terminalWrapper}>
-      <div className={styles.terminalHeader}>
-        <div className={styles.terminalDots}>
-          <span className={clsx(styles.dot, styles.dotRed)} />
-          <span className={clsx(styles.dot, styles.dotYellow)} />
-          <span className={clsx(styles.dot, styles.dotGreen)} />
-        </div>
-        <span className={styles.terminalTitle}>envguard terminal • zsh / powershell</span>
+    <div className={styles.inspectionCard}>
+      <div className={styles.inspectionHeader}>
+        <span className={styles.headerTitle}>envguard scan --format text</span>
+        <span className={styles.headerStatus}>Git Inspection</span>
       </div>
-      <div className={styles.terminalBody}>
-        <div>
-          <span className={styles.termPrompt}>$ </span>
-          <span className={styles.termCmd}>envguard scan</span>
+      <div className={styles.inspectionBody}>
+        <div className={styles.fileRow}>
+          <div>
+            <span className={styles.fileName}>.env</span>
+            <span className={styles.fileContext}>• Tracked in Git commit history</span>
+          </div>
+          <span className={styles.tagCritical}>CRITICAL</span>
         </div>
-        <div className={styles.termComment}>
-          [envguard] Varrendo repositório em busca de arquivos de ambiente sensíveis...
+        <div className={styles.fileRow}>
+          <div>
+            <span className={styles.fileName}>.env.production</span>
+            <span className={styles.fileContext}>• Not ignored in .gitignore</span>
+          </div>
+          <span className={styles.tagWarning}>WARNING</span>
         </div>
-        <br />
-        <div>
-          <span className={styles.termCrit}>✗ .env</span>{' '}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{' '}
-          <span className={styles.termCrit}>CRITICAL</span> &nbsp; Arquivo rastreado no Git
-          (commitado)
-        </div>
-        <div>
-          <span className={styles.termWarn}>⚠ .env.production</span> &nbsp;&nbsp;&nbsp;{' '}
-          <span className={styles.termWarn}>WARNING</span> &nbsp;&nbsp; Não ignorado no .gitignore
-        </div>
-        <div>
-          <span className={styles.termInfo}>✓ .env.example</span>{' '}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span className={styles.termInfo}>INFO</span>{' '}
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Template padrão identificado
-        </div>
-        <br />
-        <div>
-          <span className={styles.termCrit}>[ERRO]</span> Encontrado 1 problema CRITICAL e 1
-          WARNING.
-        </div>
-        <div>
-          <span className={styles.termComment}>
-            Dica: execute `envguard fix` para adicionar ao .gitignore e remover do cache Git.
-          </span>
+        <div className={styles.fileRow}>
+          <div>
+            <span className={styles.fileName}>.env.example</span>
+            <span className={styles.fileContext}>• Allowlisted sample template</span>
+          </div>
+          <span className={styles.tagInfo}>SAFE (INFO)</span>
         </div>
       </div>
     </div>
   );
 }
 
+function InstallCommand() {
+  const [copied, setCopied] = useState(false);
+  const cmd = 'go install github.com/joaooncode/envguard/cmd/envguard@latest';
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(cmd);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className={styles.installPill} onClick={handleCopy} title="Clique para copiar comando">
+      <span>$ {cmd}</span>
+      <span className={styles.copyIcon}>{copied ? 'COPIADO ✓' : 'COPIAR'}</span>
+    </div>
+  );
+}
+
 function HomepageHeader() {
-  const { siteConfig } = useDocusaurusContext();
   return (
     <header className={styles.heroBanner}>
       <div className="container">
         <div className={styles.heroContent}>
           <div className={styles.versionBadge}>
-            <span className={styles.badgeGlowDot} />
-            <span>v0.2.0 • Proteção Git-Aware para Segredos</span>
+            <span>envguard v0.2.0</span>
           </div>
 
           <Heading as="h1" className={styles.heroTitle}>
-            <span className={styles.gradientText}>Segurança de .env</span>
-            <br />
-            com Consciência do Git
+            Proteção de segredos .env com inteligência do Git
           </Heading>
 
-          <p className="hero__subtitle">
-            Evite que arquivos <code>.env</code> e credenciais de ambiente vazem ou cheguem ao
-            histórico de versionamento do Git.
+          <p className={styles.heroSubtitle}>
+            Detecte, alerte e impeça que arquivos de variáveis de ambiente e credenciais cheguem ao
+            histórico do Git.
           </p>
 
-          <div
-            style={{
-              margin: '1.25rem 0 2rem',
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '0.6rem',
-              flexWrap: 'wrap',
-            }}
-          >
-            <img
-              alt="Go Version"
-              src="https://img.shields.io/badge/Go-1.22%2B-6A42C2?style=flat-square&logo=go&logoColor=white"
-            />
-            <img
-              alt="License: MIT"
-              src="https://img.shields.io/badge/License-MIT-8B5DFF?style=flat-square"
-            />
-            <img
-              alt="100% Offline"
-              src="https://img.shields.io/badge/Privacy-100%25%20Offline-green?style=flat-square"
-            />
-          </div>
+          <InstallCommand />
 
           <div className={styles.buttons}>
-            <Link className="button button--primary button--lg" to="/docs/quickstart">
-              ⚡ Início Rápido (3 min)
+            <Link className="button button--primary" to="/docs/quickstart">
+              Início Rápido
             </Link>
-            <Link className="button button--secondary button--lg" to="/docs/intro">
-              📖 Explorar Documentação
+            <Link className="button button--secondary" to="/docs/intro">
+              Documentação
             </Link>
           </div>
 
-          <TerminalPreview />
+          <GitInspectionShowcase />
         </div>
       </div>
     </header>
@@ -132,3 +107,4 @@ export default function Home(): ReactNode {
     </Layout>
   );
 }
+
