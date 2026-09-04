@@ -110,7 +110,9 @@
   background-color: var(--ifm-background-surface-color) !important;
   font-size: 0.85rem !important;
   padding: 0.4rem 0.8rem 0.4rem 2rem !important;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease !important;
 }
 
 .navbar__search-input:focus {
@@ -188,7 +190,9 @@
   font-size: 0.9rem;
   margin: 1px 0;
   padding: 0.4rem 0.75rem;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .menu__link--active:not(.menu__link--sublist) {
@@ -245,4 +249,3 @@ div[class^='codeBlockContainer_'] {
   background: var(--nordic-indigo);
   color: #ffffff;
 }
-

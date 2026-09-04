@@ -15,8 +15,9 @@ const PillarList: PillarItem[] = [
     title: 'Consciência da Árvore Git',
     description: (
       <>
-        Diferencia com precisão se arquivos de ambiente estão comitados no histórico (<em>tracked</em>),
-        preparados para o próximo commit (<em>staged</em>) ou desprotegidos contra regras do <code>.gitignore</code>.
+        Diferencia com precisão se arquivos de ambiente estão comitados no histórico (
+        <em>tracked</em>), preparados para o próximo commit (<em>staged</em>) ou desprotegidos
+        contra regras do <code>.gitignore</code>.
       </>
     ),
   },
@@ -25,8 +26,9 @@ const PillarList: PillarItem[] = [
     title: '100% Local & Determinístico',
     description: (
       <>
-        Desenvolvido em Go nativo, executa instantaneamente em pipelines e máquinas locais sem qualquer telemetria.
-        Valores de variáveis e credenciais nunca são impressos em terminal ou logs.
+        Desenvolvido em Go nativo, executa instantaneamente em pipelines e máquinas locais sem
+        qualquer telemetria. Valores de variáveis e credenciais nunca são impressos em terminal ou
+        logs.
       </>
     ),
   },
@@ -35,7 +37,8 @@ const PillarList: PillarItem[] = [
     title: 'Pre-Commit & Autocorreção',
     description: (
       <>
-        Instale pre-commit hooks nativos com <code>envguard hook install</code> e execute correções automáticas no
+        Instale pre-commit hooks nativos com <code>envguard hook install</code> e execute correções
+        automáticas no
         <code>.gitignore</code> e no cache do Git através de <code>envguard fix</code>.
       </>
     ),
@@ -65,7 +68,8 @@ export default function HomepageFeatures(): ReactNode {
             Construído para engenharia e segurança
           </Heading>
           <p className={styles.sectionSubtitle}>
-            Prevenção ativa contra vazamento de segredos sem adicionar atrito ou dependências lentas.
+            Prevenção ativa contra vazamento de segredos sem adicionar atrito ou dependências
+            lentas.
           </p>
         </div>
         <div className="row">
@@ -77,4 +81,3 @@ export default function HomepageFeatures(): ReactNode {
     </section>
   );
 }
-

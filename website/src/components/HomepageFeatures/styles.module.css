@@ -44,7 +44,9 @@
   border-radius: 8px;
   background-color: var(--card-bg);
   border: 1px solid var(--border-subtle);
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
   display: flex;
   flex-direction: column;
 }
@@ -94,4 +96,3 @@
 [data-theme='dark'] .pillarDescription {
   color: #94a3b8;
 }
-

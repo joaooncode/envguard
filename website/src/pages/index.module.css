@@ -70,7 +70,9 @@
   color: var(--nordic-indigo);
   margin-bottom: 1.75rem;
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
   user-select: all;
 }
 
@@ -234,4 +236,3 @@
     gap: 0.4rem;
   }
 }
-
