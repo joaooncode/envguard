@@ -69,7 +69,8 @@ func NewDefault() *Scanner {
 }
 
 // Scan recursively walks the directory and classifies any detected environment files.
-// It never opens or reads file contents.
+// Secret detection reads up to 1 MB from each non-allowlisted environment file,
+// skipping binary files.
 func (s *Scanner) Scan(dir string) (*Result, error) {
 	if dir == "" {
 		dir = "."
