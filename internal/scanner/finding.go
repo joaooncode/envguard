@@ -20,14 +20,25 @@ const (
 	SeverityInfo Severity = "info"
 )
 
+// SecretMatch represents a single detected secret instance within a Finding's file.
+// Its Severity is independent of the parent Finding's severity.
+type SecretMatch struct {
+	Line     int      `json:"line"`
+	Key      string   `json:"key,omitempty"`
+	Method   string   `json:"method"`
+	Provider string   `json:"provider,omitempty"`
+	Severity Severity `json:"severity"`
+}
+
 // Finding represents a detected environment file and its Git security posture.
 type Finding struct {
-	Path        string         `json:"path"`
-	Severity    Severity       `json:"severity"`
-	Message     string         `json:"message"`
-	Suggestions []string       `json:"suggestions,omitempty"`
-	GitStatus   git.FileStatus `json:"git_status"`
-	IsAllowed   bool           `json:"is_allowed"`
+	Path          string         `json:"path"`
+	Severity      Severity       `json:"severity"`
+	Message       string         `json:"message"`
+	Suggestions   []string       `json:"suggestions,omitempty"`
+	GitStatus     git.FileStatus `json:"git_status"`
+	IsAllowed     bool           `json:"is_allowed"`
+	SecretMatches []SecretMatch  `json:"secret_matches,omitempty"`
 }
 
 // Summary aggregates finding counts categorized by severity.

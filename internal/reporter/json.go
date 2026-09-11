@@ -58,12 +58,13 @@ func (j *JSONReporter) Render(result *scanner.Result, w io.Writer) error {
 	sanitizedFindings := make([]scanner.Finding, len(findings))
 	for i, f := range findings {
 		sanitizedFindings[i] = scanner.Finding{
-			Path:        f.Path,
-			Severity:    f.Severity,
-			Message:     f.Message,
-			Suggestions: f.Suggestions,
-			GitStatus:   f.GitStatus,
-			IsAllowed:   f.IsAllowed,
+			Path:          f.Path,
+			Severity:      f.Severity,
+			Message:       f.Message,
+			Suggestions:   f.Suggestions,
+			GitStatus:     f.GitStatus,
+			IsAllowed:     f.IsAllowed,
+			SecretMatches: f.SecretMatches,
 		}
 	}
 

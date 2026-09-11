@@ -344,6 +344,241 @@ func TestScanNonGitDirectory(t *testing.T) {
 	}
 }
 
+func TestScanPopulatesSecretMatches(t *testing.T) {
+	repoDir := setupGitRepo(t)
+
+	// Untracked file with a real-looking secret -> Secret Match floor is HIGH.
+	untrackedFile := filepath.Join(repoDir, ".env.local")
+	if err := os.WriteFile(untrackedFile, []byte("AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// Tracked file with a real-looking secret -> Secret Match escalates to CRITICAL.
+	trackedFile := filepath.Join(repoDir, ".env.production")
+	if err := os.WriteFile(trackedFile, []byte("STRIPE_SECRET_KEY=sk_live_4eC39HqLyjWDarjtT1zdp7dc\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	runGit(t, repoDir, "add", ".env.production")
+	runGit(t, repoDir, "commit", "-m", "chore: add prod env")
+
+	s := NewDefault()
+	res, err := s.Scan(repoDir)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	findingsMap := make(map[string]Finding)
+	for _, f := range res.Findings {
+		findingsMap[f.Path] = f
+	}
+
+	untracked, ok := findingsMap[".env.local"]
+	if !ok {
+		t.Fatalf("expected finding for .env.local")
+	}
+	if len(untracked.SecretMatches) != 1 {
+		t.Fatalf("expected 1 secret match for .env.local, got %d: %+v", len(untracked.SecretMatches), untracked.SecretMatches)
+	}
+	if untracked.SecretMatches[0].Severity != SeverityHigh {
+		t.Errorf("untracked secret match severity = %s, want %s", untracked.SecretMatches[0].Severity, SeverityHigh)
+	}
+	if untracked.SecretMatches[0].Provider != "aws" {
+		t.Errorf("untracked secret match provider = %s, want aws", untracked.SecretMatches[0].Provider)
+	}
+
+	tracked, ok := findingsMap[".env.production"]
+	if !ok {
+		t.Fatalf("expected finding for .env.production")
+	}
+	if len(tracked.SecretMatches) != 1 {
+		t.Fatalf("expected 1 secret match for .env.production, got %d: %+v", len(tracked.SecretMatches), tracked.SecretMatches)
+	}
+	if tracked.SecretMatches[0].Severity != SeverityCritical {
+		t.Errorf("tracked secret match severity = %s, want %s", tracked.SecretMatches[0].Severity, SeverityCritical)
+	}
+}
+
+func TestScanSkipsSecretScanningForAllowlistedFiles(t *testing.T) {
+	tempDir := t.TempDir()
+
+	exampleFile := filepath.Join(tempDir, ".env.example")
+	if err := os.WriteFile(exampleFile, []byte("AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := Scan(tempDir)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	if len(res.Findings) != 1 {
+		t.Fatalf("expected 1 finding, got %d", len(res.Findings))
+	}
+	if len(res.Findings[0].SecretMatches) != 0 {
+		t.Errorf("expected allowlisted file to have 0 secret matches, got %d: %+v", len(res.Findings[0].SecretMatches), res.Findings[0].SecretMatches)
+	}
+}
+
+func TestScanSecretMatchSeverityCappedBySeverityOverride(t *testing.T) {
+	repoDir := setupGitRepo(t)
+
+	// Tracked file with a real-looking secret would normally floor at CRITICAL,
+	// but a Severity Override of "warning" should cap it there.
+	trackedFile := filepath.Join(repoDir, ".env.test")
+	if err := os.WriteFile(trackedFile, []byte("AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	runGit(t, repoDir, "add", ".env.test")
+	runGit(t, repoDir, "commit", "-m", "chore: add test env fixture")
+
+	cfg := &config.Config{
+		Detector: config.DetectorConfig{
+			SeverityOverrides: []config.SeverityOverride{
+				{Pattern: ".env.test", Severity: "warning"},
+			},
+		},
+	}
+
+	s := NewWithConfig(nil, nil, cfg)
+	res, err := s.Scan(repoDir)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	var finding Finding
+	for _, f := range res.Findings {
+		if f.Path == ".env.test" {
+			finding = f
+		}
+	}
+
+	if len(finding.SecretMatches) != 1 {
+		t.Fatalf("expected 1 secret match, got %d: %+v", len(finding.SecretMatches), finding.SecretMatches)
+	}
+	if finding.SecretMatches[0].Severity != SeverityWarning {
+		t.Errorf("secret match severity = %s, want %s (capped by severity override)", finding.SecretMatches[0].Severity, SeverityWarning)
+	}
+}
+
+func TestScanSkipsSecretScanningForBinaryFiles(t *testing.T) {
+	tempDir := t.TempDir()
+
+	// A binary-looking file that happens to match an env filename pattern.
+	binaryContent := append([]byte("AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\x00"), make([]byte, 10)...)
+	binaryFile := filepath.Join(tempDir, ".env.binary")
+	if err := os.WriteFile(binaryFile, binaryContent, 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := Scan(tempDir)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	if len(res.Findings) != 1 {
+		t.Fatalf("expected 1 finding, got %d", len(res.Findings))
+	}
+	if len(res.Findings[0].SecretMatches) != 0 {
+		t.Errorf("expected binary file to be skipped (0 secret matches), got %d: %+v", len(res.Findings[0].SecretMatches), res.Findings[0].SecretMatches)
+	}
+}
+
+func TestScanSkipsSecretScanningForOversizedFiles(t *testing.T) {
+	tempDir := t.TempDir()
+
+	oversized := make([]byte, maxScannableFileSize+1)
+	for i := range oversized {
+		oversized[i] = 'a'
+	}
+	secretLine := []byte("\nAWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\n")
+	oversized = append(oversized, secretLine...)
+
+	oversizedFile := filepath.Join(tempDir, ".env.big")
+	if err := os.WriteFile(oversizedFile, oversized, 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := Scan(tempDir)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	if len(res.Findings) != 1 {
+		t.Fatalf("expected 1 finding, got %d", len(res.Findings))
+	}
+	if len(res.Findings[0].SecretMatches) != 0 {
+		t.Errorf("expected oversized file to be skipped (0 secret matches), got %d: %+v", len(res.Findings[0].SecretMatches), res.Findings[0].SecretMatches)
+	}
+}
+
+func TestScannerAppliesEntropyScanAndSecretIgnoreConfig(t *testing.T) {
+	tempDir := t.TempDir()
+
+	content := "NODE_ENV=production\n" +
+		"RANDOM_TOKEN=K7mP9xQ2vL8nR4tY6wZ1aB3cD5eF0gHj\n" +
+		"IGNORED_TOKEN=K7mP9xQ2vL8nR4tY6wZ1aB3cD5eF0gHj\n"
+	envFile := filepath.Join(tempDir, ".env")
+	if err := os.WriteFile(envFile, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &config.Config{
+		Detector: config.DetectorConfig{
+			EntropyScan:  true,
+			SecretIgnore: []string{"IGNORED_TOKEN"},
+		},
+	}
+
+	s := NewWithConfig(nil, nil, cfg)
+	res, err := s.Scan(tempDir)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	if len(res.Findings) != 1 {
+		t.Fatalf("expected 1 finding, got %d", len(res.Findings))
+	}
+	matches := res.Findings[0].SecretMatches
+	if len(matches) != 1 {
+		t.Fatalf("expected 1 secret match, got %d: %+v", len(matches), matches)
+	}
+	if matches[0].Key != "RANDOM_TOKEN" {
+		t.Errorf("Key = %q, want %q", matches[0].Key, "RANDOM_TOKEN")
+	}
+	if matches[0].Method != "entropy" {
+		t.Errorf("Method = %q, want %q", matches[0].Method, "entropy")
+	}
+}
+
+func TestScannerAppliesSecretProvidersConfig(t *testing.T) {
+	tempDir := t.TempDir()
+
+	content := "AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\n"
+	envFile := filepath.Join(tempDir, ".env")
+	if err := os.WriteFile(envFile, []byte(content), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	cfg := &config.Config{
+		Detector: config.DetectorConfig{
+			SecretProviders: []string{"github"}, // aws disabled
+		},
+	}
+
+	s := NewWithConfig(nil, nil, cfg)
+	res, err := s.Scan(tempDir)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+
+	if len(res.Findings) != 1 {
+		t.Fatalf("expected 1 finding, got %d", len(res.Findings))
+	}
+	if len(res.Findings[0].SecretMatches) != 0 {
+		t.Errorf("expected 0 secret matches with aws disabled, got %d: %+v", len(res.Findings[0].SecretMatches), res.Findings[0].SecretMatches)
+	}
+}
+
 func TestScanInvalidDirectory(t *testing.T) {
 	s := NewDefault()
 

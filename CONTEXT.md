@@ -10,7 +10,7 @@ _Avoid_: Crawler, inspector, walker
 
 **Detector**:
 The rule evaluator that determines if a file path is an environment file and whether it matches safe allowlist templates.
-_Avoid_: Matcher, filter, classifier. Not to be confused with **Secret Scanner**, which inspects file *content* rather than file *paths*.
+_Avoid_: Matcher, filter, classifier. Not to be confused with **Secret Scanner**, which inspects file _content_ rather than file _paths_.
 
 **Configuration**:
 The project-level settings loaded from `.envguard.yaml`, `.envguard.yml`, or via `--config` to customize scanning and detection rules.

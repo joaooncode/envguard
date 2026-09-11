@@ -113,6 +113,13 @@ func (t *TerminalReporter) Render(result *scanner.Result, w io.Writer) error {
 					sb.WriteString(fmt.Sprintf("      • %s\n", sug))
 				}
 			}
+			if len(f.SecretMatches) > 0 {
+				sb.WriteString(fmt.Sprintf("    %s\n", t.c.cyan("Secrets:")))
+				for _, sm := range f.SecretMatches {
+					_, badge := t.severityBadge(sm.Severity)
+					sb.WriteString(fmt.Sprintf("      • %s %s at line %d\n", badge, t.secretLabel(sm), sm.Line))
+				}
+			}
 			sb.WriteString("\n")
 		}
 	}
@@ -136,6 +143,18 @@ func (t *TerminalReporter) Render(result *scanner.Result, w io.Writer) error {
 
 	_, err := io.WriteString(w, sb.String())
 	return err
+}
+
+// secretLabel formats a SecretMatch's key/provider without ever including its value.
+func (t *TerminalReporter) secretLabel(sm scanner.SecretMatch) string {
+	label := sm.Key
+	if label == "" {
+		label = "(unnamed key)"
+	}
+	if sm.Provider != "" {
+		label = fmt.Sprintf("%s (%s)", label, sm.Provider)
+	}
+	return label
 }
 
 func (t *TerminalReporter) severityBadge(sev scanner.Severity) (icon string, badge string) {

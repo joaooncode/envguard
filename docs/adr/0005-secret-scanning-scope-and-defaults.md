@@ -4,7 +4,7 @@ To implement the v0.3.0 roadmap goal of content-based secret scanning, `envguard
 
 ## Context & Problem
 
-Filename/path-level detection (the existing `Detector`) tells you a file *might* contain secrets, but not whether it actually does. The roadmap calls for two capabilities: known-provider signature matching (AWS, Stripe, GitHub, etc.) and entropy-based heuristics for unrecognized secret formats. These have very different false-positive profiles, and the feature needed to be scoped without breaking the `hook run` `<10ms` performance budget or the "never print secret values" design principle.
+Filename/path-level detection (the existing `Detector`) tells you a file _might_ contain secrets, but not whether it actually does. The roadmap calls for two capabilities: known-provider signature matching (AWS, Stripe, GitHub, etc.) and entropy-based heuristics for unrecognized secret formats. These have very different false-positive profiles, and the feature needed to be scoped without breaking the `hook run` `<10ms` performance budget or the "never print secret values" design principle.
 
 ## Decision
 
@@ -22,7 +22,7 @@ Filename/path-level detection (the existing `Detector`) tells you a file *might*
 
 ## Considered Options
 
-- **Scanning all repository files, not just env files** — rejected for v0.3.0: much larger surface, higher false-positive risk from code that legitimately references key *names*, and a bigger traversal/performance question. Left as a future expansion.
+- **Scanning all repository files, not just env files** — rejected for v0.3.0: much larger surface, higher false-positive risk from code that legitimately references key _names_, and a bigger traversal/performance question. Left as a future expansion.
 - **Entropy detection on by default alongside pattern matching** — rejected: shipping a high-false-positive heuristic on-by-default in a security tool risks alert fatigue and broken CI runs before it's proven in the wild.
 - **Folding Secret Match into the existing Finding object** — rejected: a `Finding`'s severity is driven by git exposure status, while a `Secret Match`'s severity is driven by the secret itself; conflating them would have made the severity model harder to reason about and prevented the `Severity Override` ceiling from applying cleanly.
 
