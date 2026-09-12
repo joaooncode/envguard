@@ -250,7 +250,6 @@ func (s *Scanner) matchSeverityOverride(relPath string) (Severity, bool) {
 	return "", false
 }
 
-
 // scanSecrets inspects relPath's content for embedded secrets and returns the
 // resulting SecretMatches, with severity floored by git status and capped by
 // any configured Severity Override for the file.

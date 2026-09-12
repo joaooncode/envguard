@@ -37,7 +37,6 @@ func parseSeverity(s string) (scanner.Severity, bool) {
 	}
 }
 
-
 func runScanCommand(args []string, stdout, stderr io.Writer, scannerInstance *scanner.Scanner) int {
 	fs := flag.NewFlagSet("scan", flag.ContinueOnError)
 	fs.SetOutput(stderr)
