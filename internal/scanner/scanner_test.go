@@ -849,3 +849,24 @@ func TestScannerWithConfig(t *testing.T) {
 		t.Errorf("expected .env.test to be overridden to Critical, got %+v", f)
 	}
 }
+
+func TestSeverityRank(t *testing.T) {
+	cases := []struct {
+		sev  Severity
+		rank int
+	}{
+		{SeverityInfo, 0},
+		{SeverityWarning, 1},
+		{SeverityHigh, 2},
+		{SeverityCritical, 3},
+		{Severity("unknown"), 0},
+	}
+	for _, tc := range cases {
+		if got := SeverityRank(tc.sev); got != tc.rank {
+			t.Errorf("SeverityRank(%q) = %d, want %d", tc.sev, got, tc.rank)
+		}
+	}
+	if SeverityRank(SeverityCritical) <= SeverityRank(SeverityHigh) {
+		t.Fatal("critical should rank above high")
+	}
+}
