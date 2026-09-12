@@ -137,7 +137,11 @@ func (s *Scanner) Scan(dir string) (*Result, error) {
 
 		finding := s.classifyFinding(relPath, status, isAllowed)
 		if !isAllowed {
-			finding.SecretMatches = s.scanSecrets(absDir, relPath, status)
+			secretMatches, err := s.scanSecrets(absDir, relPath, status)
+			if err != nil {
+				return err
+			}
+			finding.SecretMatches = secretMatches
 		}
 		result.Findings = append(result.Findings, finding)
 		return nil
@@ -257,17 +261,20 @@ func severityRank(sev Severity) int {
 // scanSecrets inspects relPath's content for embedded secrets and returns the
 // resulting SecretMatches, with severity floored by git status and capped by
 // any configured Severity Override for the file.
-func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus) []SecretMatch {
+func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus) ([]SecretMatch, error) {
 	fullPath := filepath.Join(absDir, relPath)
 
 	content, ok := readScannableContent(fullPath)
 	if !ok {
-		return nil
+		return nil, nil
 	}
 
-	rawMatches := s.secretScanner.Scan(content)
+	rawMatches, err := s.secretScanner.Scan(content)
+	if err != nil {
+		return nil, fmt.Errorf("secret scan failed for %s: %w", relPath, err)
+	}
 	if len(rawMatches) == 0 {
-		return nil
+		return nil, nil
 	}
 
 	floor := SeverityHigh
@@ -289,7 +296,7 @@ func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus) []S
 			Severity: floor,
 		})
 	}
-	return matches
+	return matches, nil
 }
 
 const maxScannableFileSize = 1 << 20 // 1MB

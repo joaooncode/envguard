@@ -101,10 +101,25 @@ func NewWithOptions(opts Options) *Scanner {
 }
 
 // Scan inspects content line by line and returns every detected Match.
-func (s *Scanner) Scan(content []byte) []Match {
+//
+// The scanner's buffer is sized to cover content in full: bufio.Scanner's
+// default 64KB per-line limit would otherwise make Scan() stop silently
+// (bufio.ErrTooLong) on any single line larger than that — e.g. a PEM
+// certificate or JSON credentials blob assigned to one env var — dropping
+// every match on subsequent lines without reporting an error. Since no line
+// can be longer than content itself, sizing the buffer to len(content)
+// guarantees no legitimate line ever hits the limit. Any other scanning
+// error is returned rather than swallowed.
+func (s *Scanner) Scan(content []byte) ([]Match, error) {
 	matches := make([]Match, 0)
 
 	scanner := bufio.NewScanner(bytes.NewReader(content))
+	maxTokenSize := len(content)
+	if maxTokenSize < bufio.MaxScanTokenSize {
+		maxTokenSize = bufio.MaxScanTokenSize
+	}
+	scanner.Buffer(make([]byte, 0, bufio.MaxScanTokenSize), maxTokenSize)
+
 	lineNum := 0
 	for scanner.Scan() {
 		lineNum++
@@ -141,7 +156,7 @@ func (s *Scanner) Scan(content []byte) []Match {
 		}
 	}
 
-	return matches
+	return matches, scanner.Err()
 }
 
 // extractKeyValue splits a "KEY=VALUE" line into its key and value, if present.
