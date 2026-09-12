@@ -86,6 +86,19 @@ detector:
 	}
 }
 
+func TestParseYAML_InvalidSecretProvider(t *testing.T) {
+	invalidProviderYAML := `
+detector:
+  secret_providers:
+    - aws
+    - awss
+`
+	_, err := Parse([]byte(invalidProviderYAML))
+	if err == nil {
+		t.Fatal("expected error on unknown secret_providers entry, got nil")
+	}
+}
+
 func TestParseYAML_InvalidSyntax(t *testing.T) {
 	invalidYAML := `
 scanner:

@@ -52,6 +52,25 @@ type Options struct {
 	Ignore []string
 }
 
+// ValidProviders returns the names of all shipped secret providers.
+func ValidProviders() []string {
+	names := make([]string, len(providerPatterns))
+	for i, pp := range providerPatterns {
+		names[i] = pp.provider
+	}
+	return names
+}
+
+// IsValidProvider reports whether provider is one of the shipped provider names.
+func IsValidProvider(provider string) bool {
+	for _, pp := range providerPatterns {
+		if pp.provider == provider {
+			return true
+		}
+	}
+	return false
+}
+
 func (o Options) providerEnabled(provider string) bool {
 	if len(o.Providers) == 0 {
 		return true

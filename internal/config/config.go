@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/joaooncode/envguard/internal/secretscanner"
 	"gopkg.in/yaml.v3"
 )
 
@@ -138,5 +139,12 @@ func (c *Config) Validate() error {
 			return fmt.Errorf("severity_overrides[%d]: invalid severity %q (supported: info, warning, high, critical)", i, override.Severity)
 		}
 	}
+
+	for i, provider := range c.Detector.SecretProviders {
+		if !secretscanner.IsValidProvider(provider) {
+			return fmt.Errorf("detector.secret_providers[%d]: unknown provider %q (supported: %s)", i, provider, strings.Join(secretscanner.ValidProviders(), ", "))
+		}
+	}
+
 	return nil
 }
