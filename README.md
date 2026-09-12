@@ -1,4 +1,4 @@
-<img width="700" height="300" alt="logo-2" src="https://github.com/user-attachments/assets/0a796a4e-67d9-4aed-9567-6767df45948d" />
+<img width="1394" height="259" alt="logo-3" src="https://github.com/user-attachments/assets/73113014-2701-4ba3-8e2c-816024ce2812" />
 
 > **Prevent `.env` files and environment secrets from accidentally reaching Git.**
 
