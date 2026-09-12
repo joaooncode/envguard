@@ -536,6 +536,29 @@ func TestScanSecretMatchSeverityCappedBySeverityOverride(t *testing.T) {
 	}
 }
 
+func TestMatchSeverityOverrideStopsAtFirstMatchEvenWhenUnrecognized(t *testing.T) {
+	// Config built programmatically (bypassing config.Validate()), as several
+	// tests in this package already do via NewWithConfig. The first override
+	// matches but has an unrecognized severity, so it must win with "no
+	// override" rather than let the loop fall through to the second,
+	// unrelated override.
+	cfg := &config.Config{
+		Detector: config.DetectorConfig{
+			SeverityOverrides: []config.SeverityOverride{
+				{Pattern: ".env.production", Severity: "super-critical"},
+				{Pattern: "*.production", Severity: "info"},
+			},
+		},
+	}
+
+	s := NewWithConfig(nil, nil, cfg)
+
+	sev, ok := s.matchSeverityOverride(".env.production")
+	if ok {
+		t.Errorf("matchSeverityOverride() = (%v, true), want ok=false since the first matching override's severity is unrecognized", sev)
+	}
+}
+
 func TestScanSkipsSecretScanningForBinaryFiles(t *testing.T) {
 	tempDir := t.TempDir()
 

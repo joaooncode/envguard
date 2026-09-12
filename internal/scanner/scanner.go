@@ -228,6 +228,11 @@ func (s *Scanner) matchSeverityOverride(relPath string) (Severity, bool) {
 			continue
 		}
 
+		// Stop at the first pattern match regardless of whether its severity is
+		// recognized, mirroring the original inline loop's unconditional break.
+		// An unrecognized severity here means "no override" rather than "try
+		// the next override" - callers programmatically building a Config
+		// without Validate() can otherwise see a later, unintended override win.
 		switch strings.ToLower(override.Severity) {
 		case "info":
 			return SeverityInfo, true
@@ -237,6 +242,8 @@ func (s *Scanner) matchSeverityOverride(relPath string) (Severity, bool) {
 			return SeverityHigh, true
 		case "critical":
 			return SeverityCritical, true
+		default:
+			return "", false
 		}
 	}
 	return "", false
