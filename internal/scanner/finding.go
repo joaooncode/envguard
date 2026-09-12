@@ -20,6 +20,23 @@ const (
 	SeverityInfo Severity = "info"
 )
 
+// SeverityRank orders severities from least (0) to most (3) severe.
+// Shared by the scanner and CLI so ranking cannot diverge.
+func SeverityRank(sev Severity) int {
+	switch sev {
+	case SeverityInfo:
+		return 0
+	case SeverityWarning:
+		return 1
+	case SeverityHigh:
+		return 2
+	case SeverityCritical:
+		return 3
+	default:
+		return 0
+	}
+}
+
 // SecretMatch represents a single detected secret instance within a Finding's file.
 // Its Severity is independent of the parent Finding's severity.
 type SecretMatch struct {
@@ -68,7 +85,7 @@ type Result struct {
 func (f Finding) EffectiveSeverity() Severity {
 	max := f.Severity
 	for _, m := range f.SecretMatches {
-		if severityRank(m.Severity) > severityRank(max) {
+		if SeverityRank(m.Severity) > SeverityRank(max) {
 			max = m.Severity
 		}
 	}
