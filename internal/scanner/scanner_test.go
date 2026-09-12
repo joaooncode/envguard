@@ -74,6 +74,82 @@ func TestCalculateSummary(t *testing.T) {
 	}
 }
 
+func TestCalculateSummary_SecretMatchSeverityEscalatesFinding(t *testing.T) {
+	// A real secret in a properly ignored file: Finding.Severity is Info
+	// (IsIgnored=true), but its SecretMatches contain a High-severity match.
+	// Per ADR 0005 item 4, the summary must reflect the max severity across
+	// the Finding and its SecretMatches, so this must NOT report Passed.
+	findings := []Finding{
+		{
+			Severity: SeverityInfo,
+			SecretMatches: []SecretMatch{
+				{Line: 3, Key: "AWS_SECRET_ACCESS_KEY", Method: "pattern", Provider: "aws", Severity: SeverityHigh},
+			},
+		},
+	}
+
+	summary := CalculateSummary(findings)
+
+	if summary.High != 1 {
+		t.Errorf("expected High = 1, got %d", summary.High)
+	}
+	if summary.Info != 0 {
+		t.Errorf("expected Info = 0 (escalated to High), got %d", summary.Info)
+	}
+	if summary.Passed {
+		t.Errorf("expected Passed = false when a SecretMatch has High severity, got true")
+	}
+}
+
+func TestFinding_EffectiveSeverity(t *testing.T) {
+	tests := []struct {
+		name     string
+		finding  Finding
+		expected Severity
+	}{
+		{
+			name:     "no secret matches keeps finding severity",
+			finding:  Finding{Severity: SeverityWarning},
+			expected: SeverityWarning,
+		},
+		{
+			name: "secret match lower than finding severity keeps finding severity",
+			finding: Finding{
+				Severity:      SeverityCritical,
+				SecretMatches: []SecretMatch{{Severity: SeverityHigh}},
+			},
+			expected: SeverityCritical,
+		},
+		{
+			name: "secret match higher than finding severity wins",
+			finding: Finding{
+				Severity:      SeverityInfo,
+				SecretMatches: []SecretMatch{{Severity: SeverityCritical}},
+			},
+			expected: SeverityCritical,
+		},
+		{
+			name: "max is taken across multiple secret matches",
+			finding: Finding{
+				Severity: SeverityInfo,
+				SecretMatches: []SecretMatch{
+					{Severity: SeverityWarning},
+					{Severity: SeverityHigh},
+				},
+			},
+			expected: SeverityHigh,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.finding.EffectiveSeverity(); got != tt.expected {
+				t.Errorf("expected EffectiveSeverity = %s, got %s", tt.expected, got)
+			}
+		})
+	}
+}
+
 func TestClassifyFinding(t *testing.T) {
 	s := NewDefault()
 

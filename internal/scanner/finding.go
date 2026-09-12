@@ -60,11 +60,26 @@ type Result struct {
 	Summary    Summary   `json:"summary"`
 }
 
+// EffectiveSeverity returns the maximum severity between the Finding itself and any
+// of its SecretMatches. Per ADR 0005 item 4, a Secret Match's severity is independent
+// of its parent Finding's severity, and exit-code aggregation must take the max of
+// the two — otherwise a real secret in a properly ignored file (Finding severity
+// Info) would be silently dropped from the summary.
+func (f Finding) EffectiveSeverity() Severity {
+	max := f.Severity
+	for _, m := range f.SecretMatches {
+		if severityRank(m.Severity) > severityRank(max) {
+			max = m.Severity
+		}
+	}
+	return max
+}
+
 // CalculateSummary computes metrics for a slice of findings.
 func CalculateSummary(findings []Finding) Summary {
 	var s Summary
 	for _, f := range findings {
-		switch f.Severity {
+		switch f.EffectiveSeverity() {
 		case SeverityCritical:
 			s.Critical++
 		case SeverityHigh:

@@ -72,7 +72,7 @@ func runCheckCommand(args []string, stdout, stderr io.Writer, scannerInstance *s
 		minRank := severityRank(minSev)
 		filtered := make([]scanner.Finding, 0, len(result.Findings))
 		for _, f := range result.Findings {
-			if severityRank(f.Severity) >= minRank {
+			if severityRank(f.EffectiveSeverity()) >= minRank {
 				filtered = append(filtered, f)
 			}
 		}
