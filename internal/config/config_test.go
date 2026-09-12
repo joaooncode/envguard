@@ -60,6 +60,45 @@ detector:
 	}
 }
 
+func TestParseYAML_SecretScanning(t *testing.T) {
+	yamlContent := `
+detector:
+  entropy_scan: true
+  secret_providers:
+    - aws
+    - stripe
+  secret_ignore:
+    - "TEST_*"
+`
+	cfg, err := Parse([]byte(yamlContent))
+	if err != nil {
+		t.Fatalf("unexpected error parsing valid yaml: %v", err)
+	}
+
+	if !cfg.Detector.EntropyScan {
+		t.Errorf("expected EntropyScan = true")
+	}
+	if len(cfg.Detector.SecretProviders) != 2 {
+		t.Errorf("expected 2 secret providers, got %d", len(cfg.Detector.SecretProviders))
+	}
+	if len(cfg.Detector.SecretIgnore) != 1 || cfg.Detector.SecretIgnore[0] != "TEST_*" {
+		t.Errorf("expected secret_ignore to contain 'TEST_*', got %v", cfg.Detector.SecretIgnore)
+	}
+}
+
+func TestParseYAML_InvalidSecretProvider(t *testing.T) {
+	invalidProviderYAML := `
+detector:
+  secret_providers:
+    - aws
+    - awss
+`
+	_, err := Parse([]byte(invalidProviderYAML))
+	if err == nil {
+		t.Fatal("expected error on unknown secret_providers entry, got nil")
+	}
+}
+
 func TestParseYAML_InvalidSyntax(t *testing.T) {
 	invalidYAML := `
 scanner:

@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,6 +10,7 @@ import (
 	"github.com/joaooncode/envguard/internal/config"
 	"github.com/joaooncode/envguard/internal/detector"
 	"github.com/joaooncode/envguard/internal/git"
+	"github.com/joaooncode/envguard/internal/secretscanner"
 )
 
 // IgnoredDirectories contains the directory names skipped during recursive scanning.
@@ -24,10 +26,11 @@ var IgnoredDirectories = map[string]bool{
 
 // Scanner coordinates filesystem traversal, environment detection, and Git status inspection.
 type Scanner struct {
-	gitClient  git.Client
-	detector   *detector.Detector
-	cfg        *config.Config
-	ignoreDirs map[string]bool
+	gitClient     git.Client
+	detector      *detector.Detector
+	cfg           *config.Config
+	ignoreDirs    map[string]bool
+	secretScanner *secretscanner.Scanner
 }
 
 // New creates a new Scanner instance with the provided git client and detector.
@@ -60,6 +63,11 @@ func NewWithConfig(gitClient git.Client, det *detector.Detector, cfg *config.Con
 		detector:   det,
 		cfg:        cfg,
 		ignoreDirs: ignoreMap,
+		secretScanner: secretscanner.NewWithOptions(secretscanner.Options{
+			EntropyScan: cfg.Detector.EntropyScan,
+			Providers:   cfg.Detector.SecretProviders,
+			Ignore:      cfg.Detector.SecretIgnore,
+		}),
 	}
 }
 
@@ -129,6 +137,13 @@ func (s *Scanner) Scan(dir string) (*Result, error) {
 		}
 
 		finding := s.classifyFinding(relPath, status, isAllowed)
+		if !isAllowed {
+			secretMatches, err := s.scanSecrets(absDir, relPath, status)
+			if err != nil {
+				return err
+			}
+			finding.SecretMatches = secretMatches
+		}
 		result.Findings = append(result.Findings, finding)
 		return nil
 	})
@@ -179,6 +194,22 @@ func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllow
 	}
 
 	// Check if any severity override matches this file path or base name
+	if overrideSeverity, ok := s.matchSeverityOverride(relPath); ok {
+		severity = overrideSeverity
+	}
+
+	return Finding{
+		Path:        relPath,
+		Severity:    severity,
+		Message:     message,
+		Suggestions: suggestions,
+		GitStatus:   status,
+		IsAllowed:   isAllowed,
+	}
+}
+
+// matchSeverityOverride returns the configured severity override for relPath, if any.
+func (s *Scanner) matchSeverityOverride(relPath string) (Severity, bool) {
 	baseName := filepath.Base(relPath)
 	for _, override := range s.cfg.Detector.SeverityOverrides {
 		patternLower := strings.ToLower(override.Pattern)
@@ -194,29 +225,108 @@ func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllow
 			matched = true
 		}
 
-		if matched {
-			switch strings.ToLower(override.Severity) {
-			case "info":
-				severity = SeverityInfo
-			case "warning", "warn":
-				severity = SeverityWarning
-			case "high":
-				severity = SeverityHigh
-			case "critical":
-				severity = SeverityCritical
-			}
-			break
+		if !matched {
+			continue
+		}
+
+		// Stop at the first pattern match regardless of whether its severity is
+		// recognized, mirroring the original inline loop's unconditional break.
+		// An unrecognized severity here means "no override" rather than "try
+		// the next override" - callers programmatically building a Config
+		// without Validate() can otherwise see a later, unintended override win.
+		switch strings.ToLower(override.Severity) {
+		case "info":
+			return SeverityInfo, true
+		case "warning", "warn":
+			return SeverityWarning, true
+		case "high":
+			return SeverityHigh, true
+		case "critical":
+			return SeverityCritical, true
+		default:
+			return "", false
 		}
 	}
+	return "", false
+}
 
-	return Finding{
-		Path:        relPath,
-		Severity:    severity,
-		Message:     message,
-		Suggestions: suggestions,
-		GitStatus:   status,
-		IsAllowed:   isAllowed,
+// severityRank orders severities from least (0) to most (3) severe.
+func severityRank(sev Severity) int {
+	switch sev {
+	case SeverityInfo:
+		return 0
+	case SeverityWarning:
+		return 1
+	case SeverityHigh:
+		return 2
+	case SeverityCritical:
+		return 3
+	default:
+		return 0
 	}
+}
+
+// scanSecrets inspects relPath's content for embedded secrets and returns the
+// resulting SecretMatches, with severity floored by git status and capped by
+// any configured Severity Override for the file.
+func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus) ([]SecretMatch, error) {
+	fullPath := filepath.Join(absDir, relPath)
+
+	content, ok := readScannableContent(fullPath)
+	if !ok {
+		return nil, nil
+	}
+
+	rawMatches, err := s.secretScanner.Scan(content)
+	if err != nil {
+		return nil, fmt.Errorf("secret scan failed for %s: %w", relPath, err)
+	}
+	if len(rawMatches) == 0 {
+		return nil, nil
+	}
+
+	floor := SeverityHigh
+	if status.IsTracked || status.IsStaged {
+		floor = SeverityCritical
+	}
+
+	if override, ok := s.matchSeverityOverride(relPath); ok && severityRank(override) < severityRank(floor) {
+		floor = override
+	}
+
+	matches := make([]SecretMatch, 0, len(rawMatches))
+	for _, rm := range rawMatches {
+		matches = append(matches, SecretMatch{
+			Line:     rm.Line,
+			Key:      rm.Key,
+			Method:   string(rm.Method),
+			Provider: rm.Provider,
+			Severity: floor,
+		})
+	}
+	return matches, nil
+}
+
+const maxScannableFileSize = 1 << 20 // 1MB
+
+// readScannableContent reads fullPath's content, returning ok=false for files
+// that don't exist, exceed the size cap, or look binary (contain a null byte).
+func readScannableContent(fullPath string) ([]byte, bool) {
+	info, err := os.Stat(fullPath)
+	if err != nil || info.Size() > maxScannableFileSize {
+		return nil, false
+	}
+
+	content, err := os.ReadFile(fullPath)
+	if err != nil {
+		return nil, false
+	}
+
+	if bytes.IndexByte(content, 0) != -1 {
+		return nil, false
+	}
+
+	return content, true
 }
 
 // DefaultScanner is the package-level default scanner instance.

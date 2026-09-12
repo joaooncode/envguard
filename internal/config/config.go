@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/joaooncode/envguard/internal/secretscanner"
 	"gopkg.in/yaml.v3"
 )
 
@@ -33,6 +34,12 @@ type DetectorConfig struct {
 	CustomPatterns    []string           `yaml:"custom_patterns,omitempty"`
 	Allowlist         []string           `yaml:"allowlist,omitempty"`
 	SeverityOverrides []SeverityOverride `yaml:"severity_overrides,omitempty"`
+	// EntropyScan enables the Secret Scanner's entropy-based heuristic (opt-in; off by default).
+	EntropyScan bool `yaml:"entropy_scan,omitempty"`
+	// SecretProviders restricts the Secret Scanner's pattern matching to these providers. Empty means all shipped providers.
+	SecretProviders []string `yaml:"secret_providers,omitempty"`
+	// SecretIgnore suppresses Secret Matches whose key equals or glob-matches one of these entries.
+	SecretIgnore []string `yaml:"secret_ignore,omitempty"`
 }
 
 // SeverityOverride overrides the calculated severity for files matching a pattern.
@@ -52,6 +59,8 @@ func NewDefault() *Config {
 			CustomPatterns:    make([]string, 0),
 			Allowlist:         make([]string, 0),
 			SeverityOverrides: make([]SeverityOverride, 0),
+			SecretProviders:   make([]string, 0),
+			SecretIgnore:      make([]string, 0),
 		},
 	}
 }
@@ -130,5 +139,12 @@ func (c *Config) Validate() error {
 			return fmt.Errorf("severity_overrides[%d]: invalid severity %q (supported: info, warning, high, critical)", i, override.Severity)
 		}
 	}
+
+	for i, provider := range c.Detector.SecretProviders {
+		if !secretscanner.IsValidProvider(provider) {
+			return fmt.Errorf("detector.secret_providers[%d]: unknown provider %q (supported: %s)", i, provider, strings.Join(secretscanner.ValidProviders(), ", "))
+		}
+	}
+
 	return nil
 }

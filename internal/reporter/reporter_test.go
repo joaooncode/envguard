@@ -22,6 +22,9 @@ func sampleResult() *scanner.Result {
 				Severity:    scanner.SeverityCritical,
 				Message:     "Environment file is tracked by Git (committed in repository history).",
 				Suggestions: []string{"Remove file from git tracking: git rm --cached .env", "Add to .gitignore", "Rotate any leaked credentials"},
+				SecretMatches: []scanner.SecretMatch{
+					{Line: 3, Key: "AWS_ACCESS_KEY_ID", Method: "pattern", Provider: "aws", Severity: scanner.SeverityCritical},
+				},
 			},
 			{
 				Path:        ".env.local",
@@ -180,6 +183,14 @@ func TestTerminalReporter_Render(t *testing.T) {
 		if !strings.Contains(out, "FAILED") {
 			t.Errorf("expected FAILED status in summary, got:\n%s", out)
 		}
+
+		// Verify nested secret match line, and that no value is ever printed
+		if !strings.Contains(out, "AWS_ACCESS_KEY_ID") || !strings.Contains(out, "line 3") {
+			t.Errorf("expected nested secret match with key and line number, got:\n%s", out)
+		}
+		if strings.Contains(out, "AKIA") {
+			t.Errorf("secret value must never be printed, got:\n%s", out)
+		}
 	})
 
 	t.Run("Render with ANSI colors enabled", func(t *testing.T) {
@@ -267,6 +278,18 @@ func TestJSONReporter_Render(t *testing.T) {
 
 		if report.Findings[0].Path != ".env" || report.Findings[0].Severity != scanner.SeverityCritical {
 			t.Errorf("unexpected first finding: %+v", report.Findings[0])
+		}
+
+		if len(report.Findings[0].SecretMatches) != 1 {
+			t.Fatalf("expected 1 secret match on first finding, got %d: %+v", len(report.Findings[0].SecretMatches), report.Findings[0].SecretMatches)
+		}
+		sm := report.Findings[0].SecretMatches[0]
+		if sm.Line != 3 || sm.Key != "AWS_ACCESS_KEY_ID" || sm.Provider != "aws" || sm.Severity != scanner.SeverityCritical {
+			t.Errorf("unexpected secret match: %+v", sm)
+		}
+
+		if len(report.Findings[1].SecretMatches) != 0 {
+			t.Errorf("expected 0 secret matches on second finding, got %+v", report.Findings[1].SecretMatches)
 		}
 
 		if report.Summary.Critical != 1 || report.Summary.High != 1 || report.Summary.Warning != 1 || report.Summary.Info != 1 {

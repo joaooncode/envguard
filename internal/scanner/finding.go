@@ -20,14 +20,25 @@ const (
 	SeverityInfo Severity = "info"
 )
 
+// SecretMatch represents a single detected secret instance within a Finding's file.
+// Its Severity is independent of the parent Finding's severity.
+type SecretMatch struct {
+	Line     int      `json:"line"`
+	Key      string   `json:"key,omitempty"`
+	Method   string   `json:"method"`
+	Provider string   `json:"provider,omitempty"`
+	Severity Severity `json:"severity"`
+}
+
 // Finding represents a detected environment file and its Git security posture.
 type Finding struct {
-	Path        string         `json:"path"`
-	Severity    Severity       `json:"severity"`
-	Message     string         `json:"message"`
-	Suggestions []string       `json:"suggestions,omitempty"`
-	GitStatus   git.FileStatus `json:"git_status"`
-	IsAllowed   bool           `json:"is_allowed"`
+	Path          string         `json:"path"`
+	Severity      Severity       `json:"severity"`
+	Message       string         `json:"message"`
+	Suggestions   []string       `json:"suggestions,omitempty"`
+	GitStatus     git.FileStatus `json:"git_status"`
+	IsAllowed     bool           `json:"is_allowed"`
+	SecretMatches []SecretMatch  `json:"secret_matches,omitempty"`
 }
 
 // Summary aggregates finding counts categorized by severity.
@@ -49,11 +60,26 @@ type Result struct {
 	Summary    Summary   `json:"summary"`
 }
 
+// EffectiveSeverity returns the maximum severity between the Finding itself and any
+// of its SecretMatches. Per ADR 0005 item 4, a Secret Match's severity is independent
+// of its parent Finding's severity, and exit-code aggregation must take the max of
+// the two — otherwise a real secret in a properly ignored file (Finding severity
+// Info) would be silently dropped from the summary.
+func (f Finding) EffectiveSeverity() Severity {
+	max := f.Severity
+	for _, m := range f.SecretMatches {
+		if severityRank(m.Severity) > severityRank(max) {
+			max = m.Severity
+		}
+	}
+	return max
+}
+
 // CalculateSummary computes metrics for a slice of findings.
 func CalculateSummary(findings []Finding) Summary {
 	var s Summary
 	for _, f := range findings {
-		switch f.Severity {
+		switch f.EffectiveSeverity() {
 		case SeverityCritical:
 			s.Critical++
 		case SeverityHigh:
