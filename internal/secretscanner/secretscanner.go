@@ -6,6 +6,7 @@ import (
 	"math"
 	"path/filepath"
 	"regexp"
+	"strings"
 )
 
 // Method identifies which detection technique produced a Match.
@@ -180,7 +181,7 @@ func (s *Scanner) Scan(content []byte) ([]Match, error) {
 
 // extractKeyValue splits a "KEY=VALUE" line into its key and value, if present.
 func extractKeyValue(line string) (key string, value string, ok bool) {
-	idx := bytes.IndexByte([]byte(line), '=')
+	idx := strings.IndexByte(line, '=')
 	if idx < 0 {
 		return "", "", false
 	}
