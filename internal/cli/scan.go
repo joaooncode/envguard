@@ -37,21 +37,6 @@ func parseSeverity(s string) (scanner.Severity, bool) {
 	}
 }
 
-func severityRank(sev scanner.Severity) int {
-	switch sev {
-	case scanner.SeverityInfo:
-		return 0
-	case scanner.SeverityWarning:
-		return 1
-	case scanner.SeverityHigh:
-		return 2
-	case scanner.SeverityCritical:
-		return 3
-	default:
-		return 0
-	}
-}
-
 func runScanCommand(args []string, stdout, stderr io.Writer, scannerInstance *scanner.Scanner) int {
 	fs := flag.NewFlagSet("scan", flag.ContinueOnError)
 	fs.SetOutput(stderr)
@@ -112,10 +97,10 @@ func runScanCommand(args []string, stdout, stderr io.Writer, scannerInstance *sc
 
 	// Filter by minimum severity if specified
 	if minSev != "" {
-		minRank := severityRank(minSev)
+		minRank := scanner.SeverityRank(minSev)
 		filtered := make([]scanner.Finding, 0, len(result.Findings))
 		for _, f := range result.Findings {
-			if severityRank(f.EffectiveSeverity()) >= minRank {
+			if scanner.SeverityRank(f.EffectiveSeverity()) >= minRank {
 				filtered = append(filtered, f)
 			}
 		}

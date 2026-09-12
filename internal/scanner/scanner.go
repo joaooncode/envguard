@@ -250,22 +250,6 @@ func (s *Scanner) matchSeverityOverride(relPath string) (Severity, bool) {
 	return "", false
 }
 
-// severityRank orders severities from least (0) to most (3) severe.
-func severityRank(sev Severity) int {
-	switch sev {
-	case SeverityInfo:
-		return 0
-	case SeverityWarning:
-		return 1
-	case SeverityHigh:
-		return 2
-	case SeverityCritical:
-		return 3
-	default:
-		return 0
-	}
-}
-
 // scanSecrets inspects relPath's content for embedded secrets and returns the
 // resulting SecretMatches, with severity floored by git status and capped by
 // any configured Severity Override for the file.
@@ -290,7 +274,7 @@ func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus) ([]
 		floor = SeverityCritical
 	}
 
-	if override, ok := s.matchSeverityOverride(relPath); ok && severityRank(override) < severityRank(floor) {
+	if override, ok := s.matchSeverityOverride(relPath); ok && SeverityRank(override) < SeverityRank(floor) {
 		floor = override
 	}
 
