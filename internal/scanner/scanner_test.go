@@ -240,7 +240,7 @@ func TestClassifyFinding(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			finding := s.classifyFinding(tt.path, tt.status, tt.isAllowed)
+			finding, _, _ := s.classifyFinding(tt.path, tt.status, tt.isAllowed)
 
 			if finding.Severity != tt.expectedSeverity {
 				t.Errorf("Severity = %s, want %s", finding.Severity, tt.expectedSeverity)
@@ -556,6 +556,41 @@ func TestMatchSeverityOverrideStopsAtFirstMatchEvenWhenUnrecognized(t *testing.T
 	sev, ok := s.matchSeverityOverride(".env.production")
 	if ok {
 		t.Errorf("matchSeverityOverride() = (%v, true), want ok=false since the first matching override's severity is unrecognized", sev)
+	}
+}
+
+func TestScanSecretsUsesPassedOverrideWithoutRematch(t *testing.T) {
+	tempDir := t.TempDir()
+	envPath := filepath.Join(tempDir, ".env")
+	if err := os.WriteFile(envPath, []byte("AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	// No SeverityOverrides configured — if scanSecrets re-matched via cfg it
+	// would keep the Critical floor. Passing an explicit warning override must
+	// still cap the secret match severity.
+	s := NewWithConfig(nil, nil, &config.Config{})
+	status := git.FileStatus{IsRepo: true, IsTracked: true}
+	matches, err := s.scanSecrets(tempDir, ".env", status, SeverityWarning, true)
+	if err != nil {
+		t.Fatalf("scanSecrets: %v", err)
+	}
+	if len(matches) != 1 {
+		t.Fatalf("expected 1 secret match, got %d", len(matches))
+	}
+	if matches[0].Severity != SeverityWarning {
+		t.Errorf("severity = %s, want %s from passed override", matches[0].Severity, SeverityWarning)
+	}
+
+	matches, err = s.scanSecrets(tempDir, ".env", status, "", false)
+	if err != nil {
+		t.Fatalf("scanSecrets (no override): %v", err)
+	}
+	if len(matches) != 1 {
+		t.Fatalf("expected 1 secret match, got %d", len(matches))
+	}
+	if matches[0].Severity != SeverityCritical {
+		t.Errorf("severity = %s, want %s without override", matches[0].Severity, SeverityCritical)
 	}
 }
 

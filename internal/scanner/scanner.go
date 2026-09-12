@@ -136,9 +136,9 @@ func (s *Scanner) Scan(dir string) (*Result, error) {
 			}
 		}
 
-		finding := s.classifyFinding(relPath, status, isAllowed)
+		finding, override, hasOverride := s.classifyFinding(relPath, status, isAllowed)
 		if !isAllowed {
-			secretMatches, err := s.scanSecrets(absDir, relPath, status)
+			secretMatches, err := s.scanSecrets(absDir, relPath, status, override, hasOverride)
 			if err != nil {
 				return err
 			}
@@ -157,7 +157,9 @@ func (s *Scanner) Scan(dir string) (*Result, error) {
 }
 
 // classifyFinding evaluates file metadata and git status to assign a severity level, message, and recommendations.
-func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllowed bool) Finding {
+// It also returns any severity override already resolved for relPath so callers (e.g. scanSecrets)
+// can reuse it without re-running matchSeverityOverride in the same Scan iteration.
+func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllowed bool) (Finding, Severity, bool) {
 	var severity Severity
 	var message string
 	var suggestions []string
@@ -194,8 +196,12 @@ func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllow
 	}
 
 	// Check if any severity override matches this file path or base name
+	var override Severity
+	var hasOverride bool
 	if overrideSeverity, ok := s.matchSeverityOverride(relPath); ok {
 		severity = overrideSeverity
+		override = overrideSeverity
+		hasOverride = true
 	}
 
 	return Finding{
@@ -205,7 +211,7 @@ func (s *Scanner) classifyFinding(relPath string, status git.FileStatus, isAllow
 		Suggestions: suggestions,
 		GitStatus:   status,
 		IsAllowed:   isAllowed,
-	}
+	}, override, hasOverride
 }
 
 // matchSeverityOverride returns the configured severity override for relPath, if any.
@@ -268,8 +274,9 @@ func severityRank(sev Severity) int {
 
 // scanSecrets inspects relPath's content for embedded secrets and returns the
 // resulting SecretMatches, with severity floored by git status and capped by
-// any configured Severity Override for the file.
-func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus) ([]SecretMatch, error) {
+// any severity override already resolved for the file (pass the override from
+// classifyFinding so matchSeverityOverride is not re-run in the same Scan iteration).
+func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus, override Severity, hasOverride bool) ([]SecretMatch, error) {
 	fullPath := filepath.Join(absDir, relPath)
 
 	content, ok := readScannableContent(fullPath)
@@ -290,7 +297,7 @@ func (s *Scanner) scanSecrets(absDir, relPath string, status git.FileStatus) ([]
 		floor = SeverityCritical
 	}
 
-	if override, ok := s.matchSeverityOverride(relPath); ok && severityRank(override) < severityRank(floor) {
+	if hasOverride && severityRank(override) < severityRank(floor) {
 		floor = override
 	}
 
