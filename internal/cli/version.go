@@ -4,7 +4,7 @@ import "fmt"
 
 // Version is the current semantic version of envguard.
 // Overridden at build time via -ldflags in official release builds (see .goreleaser.yaml).
-var Version = "0.3.3"
+var Version = "0.3.4"
 
 // Commit is the git commit SHA envguard was built from.
 // Overridden at build time via -ldflags in official release builds (see .goreleaser.yaml).
