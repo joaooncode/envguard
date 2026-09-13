@@ -58,10 +58,10 @@ homebrew_casks:
       owner: joaooncode
       name: homebrew-tap
       branch: main
-      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+      token: '{{ .Env.TAP_GITHUB_TOKEN }}'
     directory: Casks
-    homepage: "https://github.com/joaooncode/envguard"
-    description: "Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories."
+    homepage: 'https://github.com/joaooncode/envguard'
+    description: 'Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories.'
     hooks:
       post:
         install: |
@@ -75,9 +75,9 @@ scoops:
       owner: joaooncode
       name: scoop-bucket
       branch: main
-      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
-    homepage: "https://github.com/joaooncode/envguard"
-    description: "Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories."
+      token: '{{ .Env.TAP_GITHUB_TOKEN }}'
+    homepage: 'https://github.com/joaooncode/envguard'
+    description: 'Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories.'
     license: MIT
 
 release:
