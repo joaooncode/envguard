@@ -29,7 +29,7 @@ Além das assinaturas conhecidas, o `envguard` pode calcular a entropia de cada 
 
 ### 3. Severidade Independente por Secret Match
 
-Cada segredo encontrado (`Secret Match`) recebe sua própria severidade, calculada com piso `CRITICAL` (arquivo *tracked*/*staged*) ou `HIGH` (arquivo apenas local), e respeitando qualquer `severity_overrides` já configurado como teto. A severidade efetiva de um arquivo passa a considerar o maior valor entre o `Finding` e seus `Secret Matches`.
+Cada segredo encontrado (`Secret Match`) recebe sua própria severidade, calculada com piso `CRITICAL` (arquivo _tracked_/_staged_) ou `HIGH` (arquivo apenas local), e respeitando qualquer `severity_overrides` já configurado como teto. A severidade efetiva de um arquivo passa a considerar o maior valor entre o `Finding` e seus `Secret Matches`.
 
 ### 4. Controle Fino via `.envguard.yaml`
 

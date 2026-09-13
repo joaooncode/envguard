@@ -95,7 +95,12 @@ envguard scan --format json
         "Add to .gitignore",
         "Rotate any leaked credentials"
       ],
-      "git_status": { "is_repo": true, "is_tracked": true, "is_staged": false, "is_ignored": false },
+      "git_status": {
+        "is_repo": true,
+        "is_tracked": true,
+        "is_staged": false,
+        "is_ignored": false
+      },
       "is_allowed": false,
       "secret_matches": [
         {
@@ -112,7 +117,12 @@ envguard scan --format json
       "severity": "warning",
       "message": "Environment file exists locally and is not ignored by .gitignore.",
       "suggestions": ["Add to .gitignore"],
-      "git_status": { "is_repo": true, "is_tracked": false, "is_staged": false, "is_ignored": false },
+      "git_status": {
+        "is_repo": true,
+        "is_tracked": false,
+        "is_staged": false,
+        "is_ignored": false
+      },
       "is_allowed": false
     }
   ],

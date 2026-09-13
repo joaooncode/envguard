@@ -43,7 +43,7 @@ Os seguintes arquivos são reconhecidos por padrão como modelos públicos sem s
 
 A partir da `v0.3.0`, cada arquivo de ambiente também pode conter um ou mais **Secret Matches** — segredos reais detectados no conteúdo do arquivo pelo [Secret Scanner](./configuration.md#secret-scanning-por-conteúdo). A severidade de um Secret Match é calculada de forma **independente** da severidade do arquivo (`Finding`) que o contém:
 
-- **Piso `CRITICAL`:** se o arquivo estiver *tracked* ou *staged* no Git.
+- **Piso `CRITICAL`:** se o arquivo estiver _tracked_ ou _staged_ no Git.
 - **Piso `HIGH`:** caso contrário (arquivo apenas presente localmente).
 - **Teto:** se houver um `severity_overrides` aplicável ao arquivo, ele também limita a severidade do Secret Match (por exemplo, um `.env.test` rebaixado para `info` nunca gera um Secret Match acima de `info`).
 

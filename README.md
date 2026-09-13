@@ -95,7 +95,7 @@ Além do nome do arquivo, o `scan` (e o `check`) inspecionam o **conteúdo** de 
 - **Assinaturas de provedores conhecidos:** regex compiladas para `aws`, `stripe`, `github`, `pem` (chaves privadas RSA/EC/OpenSSH/DSA) e `bearer-token`.
 - **Heurística de entropia de Shannon** (opt-in via `.envguard.yaml`): sinaliza valores longos e aleatórios o suficiente para parecerem segredos, mesmo sem corresponder a um provedor conhecido.
 
-Cada `Secret Match` é reportado apenas com número da linha, nome da chave e provedor — **o valor do segredo nunca é impresso**. A severidade de um Secret Match é calculada de forma independente da do arquivo: piso `CRITICAL` se o arquivo estiver *tracked*/*staged* no Git, piso `HIGH` caso contrário, respeitando qualquer `severity_overrides` configurado como teto.
+Cada `Secret Match` é reportado apenas com número da linha, nome da chave e provedor — **o valor do segredo nunca é impresso**. A severidade de um Secret Match é calculada de forma independente da do arquivo: piso `CRITICAL` se o arquivo estiver _tracked_/_staged_ no Git, piso `HIGH` caso contrário, respeitando qualquer `severity_overrides` configurado como teto.
 
 ### 2. Validação para CI/CD (`check`)
 
