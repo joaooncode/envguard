@@ -64,7 +64,7 @@ function HomepageHeader() {
       <div className="container">
         <div className={styles.heroContent}>
           <div className={styles.versionBadge}>
-            <span>envguard v0.2.0</span>
+            <span>envguard v0.3.0</span>
           </div>
 
           <Heading as="h1" className={styles.heroTitle}>

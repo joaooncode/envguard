@@ -95,7 +95,7 @@ O `envguard` possui suporte nativo ao framework popular [pre-commit](https://pre
 ```yaml
 repos:
   - repo: https://github.com/joaooncode/envguard
-    rev: v0.2.0
+    rev: v0.3.0
     hooks:
       - id: envguard
 ```
