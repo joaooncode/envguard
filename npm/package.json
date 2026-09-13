@@ -1,0 +1,33 @@
+{
+  "name": "envguard",
+  "version": "0.3.0",
+  "description": "Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories.",
+  "bin": {
+    "envguard": "bin/envguard.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaooncode/envguard.git"
+  },
+  "homepage": "https://github.com/joaooncode/envguard",
+  "bugs": "https://github.com/joaooncode/envguard/issues",
+  "license": "MIT",
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "dependencies": {
+    "tar": "^7.4.3"
+  }
+}

@@ -29,6 +29,33 @@ O `envguard` resolve isso com foco específico em arquivos de ambiente:
 
 ## Instalação
 
+### Via Homebrew (macOS/Linux)
+
+```bash
+brew install --cask joaooncode/tap/envguard
+```
+
+### Via Scoop (Windows)
+
+```powershell
+scoop bucket add joaooncode https://github.com/joaooncode/scoop-bucket
+scoop install envguard
+```
+
+### Via npm / npx
+
+```bash
+# Executar sem instalar
+npx envguard check
+
+# Ou instalar como dependência de desenvolvimento
+npm install -D envguard
+```
+
+### Via GitHub Releases
+
+Baixe o binário pré-compilado para o seu sistema operacional e arquitetura na página de [Releases](https://github.com/joaooncode/envguard/releases).
+
 ### Via `go install` (Requer Go 1.22+)
 
 ```bash
@@ -46,7 +73,7 @@ cd envguard
 go build -o envguard ./cmd/envguard
 ```
 
-_(Distribuição futura via Homebrew, Scoop, WinGet e GitHub Releases)_
+_(Distribuição futura via WinGet e AUR)_
 
 ---
 

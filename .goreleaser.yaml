@@ -1,0 +1,86 @@
+version: 2
+
+project_name: envguard
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: envguard
+    main: ./cmd/envguard
+    binary: envguard
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/joaooncode/envguard/internal/cli.Version={{ .Version }}
+      - -X github.com/joaooncode/envguard/internal/cli.Commit={{ .ShortCommit }}
+      - -X github.com/joaooncode/envguard/internal/cli.Date={{ .Date }}
+
+archives:
+  - id: envguard-archive
+    ids:
+      - envguard
+    formats:
+      - tar.gz
+    name_template: >-
+      envguard_{{ .Os }}_{{ .Arch }}
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^style:'
+
+homebrew_casks:
+  - name: envguard
+    binaries:
+      - envguard
+    repository:
+      owner: joaooncode
+      name: homebrew-tap
+      branch: main
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    directory: Casks
+    homepage: "https://github.com/joaooncode/envguard"
+    description: "Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories."
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/envguard"]
+          end
+
+scoops:
+  - name: envguard
+    repository:
+      owner: joaooncode
+      name: scoop-bucket
+      branch: main
+      token: "{{ .Env.TAP_GITHUB_TOKEN }}"
+    homepage: "https://github.com/joaooncode/envguard"
+    description: "Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories."
+    license: MIT
+
+release:
+  github:
+    owner: joaooncode
+    name: envguard
