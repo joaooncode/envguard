@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'envguard',
   tagline: 'Prevent .env files and environment secrets from accidentally reaching Git.',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   // Configurações para GitHub Pages
   url: 'https://docs.envguard.com.br',
