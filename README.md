@@ -9,6 +9,8 @@
 
 `envguard` é uma ferramenta open source de linha de comando (CLI) desenvolvida em **Go**, projetada para atuar como uma camada leve de proteção entre o desenvolvedor e o Git. O foco principal é detectar, alertar, remediar e prevenir a exposição indevida de arquivos de variáveis de ambiente (`.env`, `.env.production`, `.env.local`, etc.) em repositórios.
 
+**Documentação oficial em: ** (https://docs.envguard.com.br)
+
 ---
 
 ## Por que o `envguard`?
