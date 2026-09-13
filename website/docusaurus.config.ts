@@ -8,8 +8,8 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Configurações para GitHub Pages
-  url: 'https://joaooncode.github.io',
-  baseUrl: '/envguard/',
+  url: 'https://docs.envguard.com.br',
+  baseUrl: '/',
   organizationName: 'joaooncode',
   projectName: 'envguard',
   trailingSlash: false,
