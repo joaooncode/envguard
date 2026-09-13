@@ -27,3 +27,8 @@ automation:
   label: Automação
   permalink: /automacao
   description: Automação e pipelines de segurança
+
+secret-scanning:
+  label: Secret Scanning
+  permalink: /secret-scanning
+  description: Detecção de segredos por conteúdo, assinaturas e entropia

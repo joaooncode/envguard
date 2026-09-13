@@ -41,7 +41,7 @@ envguard scan
 #### Exemplo de Saída:
 
 ```text
-🛡️  envguard v0.2.0
+🛡️  envguard v0.3.0
 Target: ./meu-projeto
 ──────────────────────────────────────────────────
 
@@ -52,6 +52,8 @@ Findings:
       • Remove file from git tracking: git rm --cached .env
       • Add to .gitignore
       • Rotate any leaked credentials
+    Secrets:
+      • [CRITICAL] AWS_ACCESS_KEY_ID (aws) at line 3
 
   ⚠ [WARNING] .env.local
     Message:     Environment file exists locally and is not ignored by .gitignore.
@@ -63,6 +65,8 @@ Summary:
   Total Findings: 2 (Critical: 1, High: 0, Warning: 1, Info: 0)
   Status:         ✗ FAILED
 ```
+
+Quando o arquivo contém segredos reais detectados pelo [Secret Scanner](../configuration.md#secret-scanning-por-conteúdo), cada ocorrência é listada em `Secrets:` com sua própria severidade, chave, provedor (se aplicável) e linha — **o valor do segredo nunca é exibido**.
 
 ---
 
@@ -78,31 +82,48 @@ envguard scan --format json
 
 ```json
 {
-  "version": "v0.1.0",
-  "repository": "./meu-projeto",
-  "total_findings": 2,
-  "critical": 1,
-  "warning": 1,
+  "version": "0.3.0",
+  "timestamp": "2026-09-12T12:00:00Z",
+  "scanned_dir": "./meu-projeto",
   "findings": [
     {
       "path": ".env",
-      "severity": "CRITICAL",
-      "status": "tracked",
-      "message": "File is tracked by Git version control"
+      "severity": "critical",
+      "message": "Environment file is tracked by Git (committed in repository history).",
+      "suggestions": [
+        "Remove file from git tracking: git rm --cached .env",
+        "Add to .gitignore",
+        "Rotate any leaked credentials"
+      ],
+      "git_status": { "is_repo": true, "is_tracked": true, "is_staged": false, "is_ignored": false },
+      "is_allowed": false,
+      "secret_matches": [
+        {
+          "line": 3,
+          "key": "AWS_ACCESS_KEY_ID",
+          "method": "pattern",
+          "provider": "aws",
+          "severity": "critical"
+        }
+      ]
     },
     {
       "path": ".env.local",
-      "severity": "WARNING",
-      "status": "unignored",
-      "message": "File is not ignored by .gitignore"
-    },
-    {
-      "path": ".env.example",
-      "severity": "INFO",
-      "status": "allowed_template",
-      "message": "Recognized as safe environment template"
+      "severity": "warning",
+      "message": "Environment file exists locally and is not ignored by .gitignore.",
+      "suggestions": ["Add to .gitignore"],
+      "git_status": { "is_repo": true, "is_tracked": false, "is_staged": false, "is_ignored": false },
+      "is_allowed": false
     }
-  ]
+  ],
+  "summary": {
+    "total": 2,
+    "critical": 1,
+    "high": 0,
+    "warning": 1,
+    "info": 0,
+    "passed": false
+  }
 }
 ```
 

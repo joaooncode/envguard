@@ -39,6 +39,18 @@ Os seguintes arquivos são reconhecidos por padrão como modelos públicos sem s
 
 ---
 
+## Severidade dos Secret Matches
+
+A partir da `v0.3.0`, cada arquivo de ambiente também pode conter um ou mais **Secret Matches** — segredos reais detectados no conteúdo do arquivo pelo [Secret Scanner](./configuration.md#secret-scanning-por-conteúdo). A severidade de um Secret Match é calculada de forma **independente** da severidade do arquivo (`Finding`) que o contém:
+
+- **Piso `CRITICAL`:** se o arquivo estiver *tracked* ou *staged* no Git.
+- **Piso `HIGH`:** caso contrário (arquivo apenas presente localmente).
+- **Teto:** se houver um `severity_overrides` aplicável ao arquivo, ele também limita a severidade do Secret Match (por exemplo, um `.env.test` rebaixado para `info` nunca gera um Secret Match acima de `info`).
+
+Como um Secret Match pode ser mais severo que o próprio `Finding` (por exemplo, um segredo real dentro de um arquivo corretamente ignorado, com severidade `INFO`), o resumo final do scan e o código de saída sempre consideram a **severidade efetiva** — o maior valor entre o `Finding` e todos os seus `Secret Matches`.
+
+---
+
 ## Próximos Recursos no Roadmap
 
-Na versão `v0.2.0`, será possível customizar padrões extras de busca, ignorar pastas específicas e definir regras corporativas através do arquivo `.envguard.yaml`.
+Na versão `v1.0.0`, está prevista a GitHub Action oficial do `envguard` e pacotes para gerenciadores como Homebrew, Scoop, WinGet e AUR.

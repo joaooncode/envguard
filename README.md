@@ -21,6 +21,7 @@ O `envguard` resolve isso com foco específico em arquivos de ambiente:
 - **Rápido & Local:** Funciona 100% offline, sem envio de dados para servidores externos. Ideal para execução local, _pre-commit hooks_ e pipelines de CI/CD.
 - **Remediação Automática:** Adiciona padrões ausentes ao `.gitignore` automaticamente (`envguard fix`).
 - **Hooks Nativos & Framework Pre-commit:** Instalação direta em `.git/hooks/pre-commit` e suporte ao framework Python `pre-commit`.
+- **Secret Scanning por Conteúdo:** Analisa o conteúdo dos arquivos de ambiente em busca de credenciais reais (AWS, Stripe, GitHub, chaves PEM, tokens Bearer) e valores de alta entropia, sem nunca expor os valores encontrados.
 - **Seguro por Design:** Nunca imprime ou expõe valores de variáveis ou segredos em logs e saídas do terminal.
 - **Pronto para CI/CD:** Suporta formato JSON estruturado (`--format json`) e códigos de saída determinísticos para automação.
 
@@ -62,7 +63,7 @@ envguard scan
 Exemplo de saída no terminal:
 
 ```text
-🛡️  envguard v0.2.0
+🛡️  envguard v0.3.0
 Target: ./meu-projeto
 ──────────────────────────────────────────────────
 
@@ -73,6 +74,8 @@ Findings:
       • Remove file from git tracking: git rm --cached .env
       • Add to .gitignore
       • Rotate any leaked credentials
+    Secrets:
+      • [CRITICAL] AWS_ACCESS_KEY_ID (aws) at line 3
 
   ⚠ [WARNING] .env.local
     Message:     Environment file exists locally and is not ignored by .gitignore.
@@ -84,6 +87,15 @@ Summary:
   Total Findings: 2 (Critical: 1, High: 0, Warning: 1, Info: 0)
   Status:         ✗ FAILED
 ```
+
+#### Detecção de Segredos por Conteúdo (Secret Scanning)
+
+Além do nome do arquivo, o `scan` (e o `check`) inspecionam o **conteúdo** de cada arquivo de ambiente encontrado, combinando duas técnicas independentes:
+
+- **Assinaturas de provedores conhecidos:** regex compiladas para `aws`, `stripe`, `github`, `pem` (chaves privadas RSA/EC/OpenSSH/DSA) e `bearer-token`.
+- **Heurística de entropia de Shannon** (opt-in via `.envguard.yaml`): sinaliza valores longos e aleatórios o suficiente para parecerem segredos, mesmo sem corresponder a um provedor conhecido.
+
+Cada `Secret Match` é reportado apenas com número da linha, nome da chave e provedor — **o valor do segredo nunca é impresso**. A severidade de um Secret Match é calculada de forma independente da do arquivo: piso `CRITICAL` se o arquivo estiver *tracked*/*staged* no Git, piso `HIGH` caso contrário, respeitando qualquer `severity_overrides` configurado como teto.
 
 ### 2. Validação para CI/CD (`check`)
 
@@ -115,7 +127,7 @@ Adicione ao seu `.pre-commit-config.yaml`:
 ```yaml
 repos:
   - repo: https://github.com/joaooncode/envguard
-    rev: v0.2.0
+    rev: v0.3.0
     hooks:
       - id: envguard
 ```
@@ -187,6 +199,15 @@ detector:
   severity_overrides:
     - pattern: '.env.test'
       severity: 'warning'
+
+  # Habilita a heuristica de entropia do Secret Scanner (opt-in, off por padrao)
+  entropy_scan: false
+
+  # Restringe o Secret Scanner a provedores especificos (vazio = todos: aws, stripe, github, pem, bearer-token)
+  secret_providers: []
+
+  # Ignora Secret Matches cuja chave seja igual ou faca glob-match com estas entradas
+  secret_ignore: []
 ```
 
 ---
@@ -221,9 +242,9 @@ detector:
   - [x] `envguard fix` (auxílio na adição automática ao `.gitignore`)
   - [x] Suporte a arquivo de configuração `.envguard.yaml` e flag `--config`
   - [x] Instalação de _Git Pre-commit Hooks_ nativos e suporte a Python `pre-commit`
-- [ ] **v0.3.0:**
-  - [ ] Secret scanning básico por conteúdo & cálculo de entropia
-  - [ ] Deteção de padrões comuns de chaves (AWS, Stripe, GitHub, etc.)
+- [x] **v0.3.0:**
+  - [x] Secret scanning básico por conteúdo & cálculo de entropia
+  - [x] Deteção de padrões comuns de chaves (AWS, Stripe, GitHub, etc.)
 - [ ] **v1.0.0:**
   - [ ] GitHub Action oficial do envguard
   - [ ] Pacotes para Homebrew, Scoop, WinGet e AUR
