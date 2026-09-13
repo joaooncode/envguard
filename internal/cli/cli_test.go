@@ -33,8 +33,8 @@ func TestCLIVersion(t *testing.T) {
 			}
 
 			out := stdout.String()
-			if !strings.Contains(out, "envguard v0.3.0") {
-				t.Fatalf("expected stdout to contain 'envguard v0.3.0', got: %s", out)
+			if !strings.Contains(out, "envguard v0.3.1") {
+				t.Fatalf("expected stdout to contain 'envguard v0.3.1', got: %s", out)
 			}
 		})
 	}
@@ -168,8 +168,8 @@ func TestCLIScanCleanDirectory(t *testing.T) {
 		if !report.Summary.Passed {
 			t.Fatalf("expected report summary passed to be true, got false")
 		}
-		if report.Version != "0.3.0" {
-			t.Fatalf("expected report version 0.3.0, got %s", report.Version)
+		if report.Version != "0.3.1" {
+			t.Fatalf("expected report version 0.3.1, got %s", report.Version)
 		}
 	})
 }
