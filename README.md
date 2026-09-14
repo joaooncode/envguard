@@ -48,10 +48,10 @@ scoop install envguard
 
 ```bash
 # Executar sem instalar
-npx envguard check
+npx @joaooncode/envguard check
 
 # Ou instalar como dependência de desenvolvimento
-npm install -D envguard
+npm install -D @joaooncode/envguard
 ```
 
 ### Via GitHub Releases

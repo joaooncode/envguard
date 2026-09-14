@@ -1,6 +1,6 @@
 {
-  "name": "envguard",
-  "version": "0.3.7",
+  "name": "@joaooncode/envguard",
+  "version": "0.3.8",
   "description": "Security-focused CLI tool to detect and prevent committed or exposed environment files in Git repositories.",
   "bin": {
     "envguard": "bin/envguard.js"
